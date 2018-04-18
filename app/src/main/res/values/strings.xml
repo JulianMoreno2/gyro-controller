@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">RobotController</string>
+    <string name="search_device_hint">Search devices.</string>
+    <string name="text_bluetooth_status">Status</string>
+    <string name="text_enable_bluetooth">Enable</string>
+    <string name="text_scan_bluetooth">Scan</string>
+    <string name="text_pair">Pair</string>
+    <string name="text_connect">Connect</string>
+    <string name="text_navigate">Navigate</string>
+    <string name="text_stop">Stop</string>
+    <string name="text_disconnect">Disconnect</string>
+    <string name="text_left">Left</string>
+    <string name="text_right">Right</string>
+    <string name="text_forward">Forward</string>
+    <string name="text_backward">Backward</string>
+    <string name="text_title">Robot Controller</string>
+</resources>
