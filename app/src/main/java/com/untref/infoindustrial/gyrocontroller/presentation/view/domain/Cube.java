@@ -6,35 +6,59 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-/**
- * A simple colour-cube that is used for drawing the current rotation of the device
- *
- */
 public class Cube {
-    /**
-     * Buffer for the vertices
-     */
+
+    private static final float V_SIZE = 0.5f;
+
     private FloatBuffer mVertexBuffer;
-    /**
-     * Buffer for the colours
-     */
     private FloatBuffer mColorBuffer;
-    /**
-     * Buffer for indices
-     */
     private ByteBuffer mIndexBuffer;
 
-    /**
-     * Initialises a new instance of the cube
-     */
     public Cube() {
-        final float vertices[] = { -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, };
+        final float vertices[] = {
+                -V_SIZE, -V_SIZE, -V_SIZE,//0
+                V_SIZE, -V_SIZE, -V_SIZE, //1
+                V_SIZE, V_SIZE, -V_SIZE,  //2
+                -V_SIZE, V_SIZE, -V_SIZE, //3
+                -V_SIZE, -V_SIZE, V_SIZE, //4
+                V_SIZE, -V_SIZE, V_SIZE,  //5
+                V_SIZE, V_SIZE, V_SIZE,   //6
+                -V_SIZE, V_SIZE, V_SIZE,  //7
+        };
 
-        final float colors[] = { 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0,
-                1, 1, 1, };
+        final float colors[] = {
+                0, 0,
+                0, 1,
+                1, 0,
+                0, 1,
+                1, 1,
+                0, 1,
+                0, 1,
+                0, 1,
+                0, 0,
+                1, 1,
+                1, 0,
+                1, 1,
+                1, 1,
+                1, 1,
+                0, 1,
+                1, 1,
+        };
 
-        final byte indices[] = { 0, 4, 5, 0, 5, 1, 1, 5, 6, 1, 6, 2, 2, 6, 7, 2, 7, 3, 3, 7, 4, 3, 4, 0, 4, 7, 6, 4, 6,
-                5, 3, 0, 1, 3, 1, 2 };
+        final byte indices[] = {
+                0, 4, 5,
+                0, 5, 1,
+                1, 5, 6,
+                1, 6, 2,
+                2, 6, 7,
+                2, 7, 3,
+                3, 7, 4,
+                3, 4, 0,
+                4, 7, 6,
+                4, 6, 5,
+                3, 0, 1,
+                3, 1, 2
+        };
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
         vbb.order(ByteOrder.nativeOrder());
@@ -53,11 +77,6 @@ public class Cube {
         mIndexBuffer.position(0);
     }
 
-    /**
-     * Draws this cube of the given GL-Surface
-     *
-     * @param gl The GL-Surface this cube should be drawn upon.
-     */
     public void draw(GL10 gl) {
         gl.glEnable(GL10.GL_CULL_FACE);
         gl.glFrontFace(GL10.GL_CW);
