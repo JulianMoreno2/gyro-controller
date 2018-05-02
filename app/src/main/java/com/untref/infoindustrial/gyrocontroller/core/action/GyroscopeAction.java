@@ -1,11 +1,8 @@
 package com.untref.infoindustrial.gyrocontroller.core.action;
 
-import android.util.Log;
-
 import com.untref.infoindustrial.gyrocontroller.core.sensor.CalibratedGyroscope;
 
 import io.reactivex.Completable;
-import io.reactivex.schedulers.Schedulers;
 
 public class GyroscopeAction {
 
@@ -15,19 +12,8 @@ public class GyroscopeAction {
         this.calibratedGyroscope = calibratedGyroscope;
     }
 
-    public Completable executeStart() {
-        return Completable.fromAction(this.calibratedGyroscope::start)
-                .subscribeOn(Schedulers.computation())
-                .doOnComplete(() -> log("executeStart"));
+    public Completable execute() {
+        return Completable.fromAction(this.calibratedGyroscope::start);
     }
 
-    public Completable executeStop() {
-        return Completable.fromAction(this.calibratedGyroscope::stop)
-                .subscribeOn(Schedulers.computation())
-                .doOnComplete(() -> log("executeStop"));
-    }
-
-    private void log(String message) {
-        Log.d("DEBUG", message);
-    }
 }

@@ -8,22 +8,18 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
-/**
- * Class that implements the rendering of a cube with the current rotation of the device that is provided by a
- * OrientationProvider
- *
- * @author Alexander Pacha
- */
 public class CubeRenderer implements GLSurfaceView.Renderer {
 
-    private final Cube cube;
+    private Cube cube;
     private final Observable<GyroscopeCoordinates> observeGyroscopeCoordinates;
+    private GyroscopeCoordinates coords;
 
     public CubeRenderer(Observable<GyroscopeCoordinates> observeGyroscopeCoordinates) {
         this.observeGyroscopeCoordinates = observeGyroscopeCoordinates;
-        this.cube = new Cube();
+        this.coords = new GyroscopeCoordinates(0, 0, 0, 0);
     }
 
     @Override
@@ -37,6 +33,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
         activeDistantView(gl);
         //activeInsideView(gl);
+        rotate(gl, coords);
 
         // draw our object
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -89,29 +86,12 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        this.cube = new Cube();
         gl.glDisable(GL10.GL_DITHER);
         gl.glClearColor(0, 0, 0, 1);
 
-        // TODO: test that susbscribe emit all coords
         observeGyroscopeCoordinates
-                .subscribeOn(Schedulers.io())
-                .subscribe(coords -> onCustomizedDrawFrame(gl, coords));
-    }
-
-    private void onCustomizedDrawFrame(GL10 gl, GyroscopeCoordinates coords) {
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-        gl.glMatrixMode(GL10.GL_MODELVIEW);
-        gl.glLoadIdentity();
-
-        activeDistantView(gl);
-        //activeInsideView(gl);
-
-        rotate(gl, coords);
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-
-        this.cube.draw(gl);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(coords -> this.coords = coords);
     }
 }

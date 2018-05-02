@@ -2,10 +2,9 @@ package com.untref.infoindustrial.gyrocontroller.core.provider;
 
 import android.hardware.SensorManager;
 
-import com.untref.infoindustrial.gyrocontroller.core.action.ListenBluetoothDeviceConnectionAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.GyroscopeAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeCoordinatesFromBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
-import com.untref.infoindustrial.gyrocontroller.core.action.GyroscopeAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeCoordinatesAction;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.CalibratedGyroscope;
 
@@ -15,7 +14,6 @@ public class ActionProvider {
     private static SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
     private static ListenGyroscopeCoordinatesFromBluetoothAction listenGyroscopeCoordinatesFromBluetoothAction;
     private static SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinatesAction;
-    private static ListenBluetoothDeviceConnectionAction listenBluetoothDeviceConnectionAction;
 
     public static GyroscopeAction getStartGyroscopeAction(SensorManager sensorManager) {
         if (gyroscopeAction == null) {
@@ -50,15 +48,5 @@ public class ActionProvider {
                     Provider.provideBluetoothService());
         }
         return sendRandomGyroscopeCoordinatesAction;
-    }
-
-    public static ListenBluetoothDeviceConnectionAction getListenBluetoothDeviceConnectionAction() {
-        if (listenBluetoothDeviceConnectionAction == null) {
-            listenBluetoothDeviceConnectionAction = new ListenBluetoothDeviceConnectionAction(
-                    Provider.provideReceiverBluetoothSocketConnectionPublishSubject(),
-                    Provider.provideBluetoothClient()
-            );
-        }
-        return listenBluetoothDeviceConnectionAction;
     }
 }

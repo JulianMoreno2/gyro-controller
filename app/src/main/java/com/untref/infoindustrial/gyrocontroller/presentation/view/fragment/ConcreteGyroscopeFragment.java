@@ -23,8 +23,6 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
 
     @BindView(R.id.btn_start)
     Button btn_start;
-    @BindView(R.id.btn_stop)
-    Button btn_stop;
     @BindView(R.id.btn_send_coord)
     Button btn_send_coord;
     @BindView(R.id.log_textview)
@@ -66,7 +64,6 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
         ButterKnife.bind(this, view);
 
         btn_start.setOnClickListener(v -> concreteGyroscopePresenter.onStart());
-        btn_stop.setOnClickListener(v -> concreteGyroscopePresenter.onStop());
         btn_send_coord.setOnClickListener(v ->
                 concreteGyroscopePresenter.onSendRandomGyroscopeCoordinates());
     }
@@ -80,14 +77,6 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
     public void start() {
         logTextView.append("STARTING\n");
         btn_start.setEnabled(false);
-        btn_stop.setEnabled(true);
-    }
-
-    @Override
-    public void stop() {
-        logTextView.append("STOPPING\n");
-        btn_start.setEnabled(true);
-        btn_stop.setEnabled(false);
     }
 
     @Override

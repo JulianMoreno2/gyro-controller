@@ -49,7 +49,7 @@ public class DevicesFragment extends Fragment implements DevicesPresenter.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         devicesPresenter = new DevicesPresenter(getContext(),
-                new DevicesInteractor(Provider.provideBluetoothClient(), new DevicesRepository()),
+                new DevicesInteractor(Provider.provideBluetoothService()),
                 Provider.provideBluetoothService());
         devicesPresenter.setView(this);
         devicesPresenter.onStartDiscovery();

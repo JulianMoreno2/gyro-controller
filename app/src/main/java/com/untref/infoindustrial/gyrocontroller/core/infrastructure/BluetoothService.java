@@ -1,4 +1,4 @@
-package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.approach;
+package com.untref.infoindustrial.gyrocontroller.core.infrastructure;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,6 +10,8 @@ import android.os.Message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import io.reactivex.functions.Action;
@@ -24,38 +26,36 @@ import io.reactivex.subjects.PublishSubject;
 public class BluetoothService {
 
     // Name for the SDP record when creating server socket
-    private static final String NAME = "BluetoothFragment";
+    private static final String NAME = "";
 
     // Unique UUID for this application
     private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
-    // Member fields
-    private final BluetoothAdapter mAdapter;
-    private final Handler mHandler;
-    private AcceptThread mAcceptThread;
-    private ConnectThread mConnectThread;
-    private ConnectedThread mConnectedThread;
+    private final BluetoothAdapter bluetoothAdapter;
+    private final Handler handler;
+    private AcceptThread acceptThread;
+    private ConnectThread connectThread;
+    private ConnectedThread connectedThread;
     private PublishSubject<String> bluetoothMessagePublishSubject;
 
-    private int mState;
+    private int state;
     // Constants that indicate the current connection state
-    public static final int STATE_NONE = 0;       // we're doing nothing
-    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
-    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    private static final int STATE_NONE = 0;       // we're doing nothing
+    private static final int STATE_LISTEN = 1;     // now listening for incoming connections
+    private static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    private static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
     // Message types sent from the BluetoothService Handler
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
+    private static final int MESSAGE_STATE_CHANGE = 1;
+    private static final int MESSAGE_READ = 2;
+    private static final int MESSAGE_WRITE = 3;
+    private static final int MESSAGE_DEVICE_NAME = 4;
 
     public BluetoothService(PublishSubject<String> bluetoothMessagePublishSubject) {
         this.bluetoothMessagePublishSubject = bluetoothMessagePublishSubject;
-        mAdapter = BluetoothAdapter.getDefaultAdapter();
-        mState = STATE_NONE;
-        mHandler = createHandler();
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        state = STATE_NONE;
+        handler = createHandler();
     }
 
     private Handler createHandler() {
@@ -64,13 +64,9 @@ public class BluetoothService {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case MESSAGE_WRITE:
-                        byte[] writeBuf = (byte[]) msg.obj;
-                        // construct a string from the buffer
-                        String writeMessage = new String(writeBuf);
                         break;
                     case MESSAGE_READ:
                         byte[] readBuf = (byte[]) msg.obj;
-                        // construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
                         bluetoothMessagePublishSubject.onNext(readMessage);
                         break;
@@ -81,23 +77,31 @@ public class BluetoothService {
         };
     }
 
+    public boolean isEnabled() {
+        return isCompatible() && bluetoothAdapter.isEnabled();
+    }
+
+    private boolean isCompatible() {
+        return bluetoothAdapter != null;
+    }
+
+    public void startDiscovery() {
+        bluetoothAdapter.startDiscovery();
+    }
+
+    public Set<BluetoothDevice> getBoundedDevices() {
+        return new HashSet<>(bluetoothAdapter.getBondedDevices());
+    }
+
     /**
      * Set the current state of the chat connection
      *
      * @param state An integer defining the current connection state
      */
-
     private synchronized void setState(int state) {
-        mState = state;
+        this.state = state;
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
-    }
-
-    /**
-     * Return the current connection state.
-     */
-    public synchronized int getState() {
-        return mState;
+        handler.obtainMessage(MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -106,19 +110,19 @@ public class BluetoothService {
      */
     public synchronized void start(Action startGyroscopeRepresentationFragment) {
         // Cancel any thread attempting to make a connection
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
         }
         // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
         }
         // Start the thread to listen on a BluetoothServerSocket
-        if (mAcceptThread == null) {
-            mAcceptThread = new AcceptThread(startGyroscopeRepresentationFragment);
-            mAcceptThread.start();
+        if (acceptThread == null) {
+            acceptThread = new AcceptThread(startGyroscopeRepresentationFragment);
+            acceptThread.start();
         }
         setState(STATE_LISTEN);
     }
@@ -130,20 +134,20 @@ public class BluetoothService {
      */
     public synchronized void connect(BluetoothDevice device, Action startConcreteGyroscope) {
         // Cancel any thread attempting to make a connection
-        if (mState == STATE_CONNECTING) {
-            if (mConnectThread != null) {
-                mConnectThread.cancel();
-                mConnectThread = null;
+        if (state == STATE_CONNECTING) {
+            if (connectThread != null) {
+                connectThread.cancel();
+                connectThread = null;
             }
         }
         // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
         }
         // Start the thread to connect with the given device
-        mConnectThread = new ConnectThread(device, startConcreteGyroscope);
-        mConnectThread.start();
+        connectThread = new ConnectThread(device, startConcreteGyroscope);
+        connectThread.start();
         setState(STATE_CONNECTING);
     }
 
@@ -155,23 +159,23 @@ public class BluetoothService {
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
         // Cancel the thread that completed the connection
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
         }
         // Cancel any thread currently running a connection
-        if (mConnectedThread != null) {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
         }
         // Cancel the accept thread because we only want to connect to one device
-        if (mAcceptThread != null) {
-            mAcceptThread.cancel();
-            mAcceptThread = null;
+        if (acceptThread != null) {
+            acceptThread.cancel();
+            acceptThread = null;
         }
         // Start the thread to manage the connection and perform transmissions
-        mConnectedThread = new ConnectedThread(socket);
-        mConnectedThread.start();
+        connectedThread = new ConnectedThread(socket);
+        connectedThread.start();
         setState(STATE_CONNECTED);
     }
 
@@ -179,17 +183,17 @@ public class BluetoothService {
      * Stop all threads
      */
     public synchronized void stop() {
-        if (mConnectThread != null) {
-            mConnectThread.cancel();
-            mConnectThread = null;
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
         }
-        if (mConnectedThread != null) {
-            mConnectedThread.cancel();
-            mConnectedThread = null;
+        if (connectedThread != null) {
+            connectedThread.cancel();
+            connectedThread = null;
         }
-        if (mAcceptThread != null) {
-            mAcceptThread.cancel();
-            mAcceptThread = null;
+        if (acceptThread != null) {
+            acceptThread.cancel();
+            acceptThread = null;
         }
         setState(STATE_NONE);
     }
@@ -205,8 +209,8 @@ public class BluetoothService {
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
-            r = mConnectedThread;
+            if (state != STATE_CONNECTED) return;
+            r = connectedThread;
         }
         // Perform the write unsynchronized
         r.write(out);
@@ -241,7 +245,7 @@ public class BluetoothService {
             BluetoothServerSocket tmp = null;
             // Create a new listening server socket
             try {
-                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
             } catch (IOException e) {
             }
             mmServerSocket = tmp;
@@ -251,7 +255,7 @@ public class BluetoothService {
             setName("AcceptThread");
             BluetoothSocket socket = null;
             // Listen to the server socket if we're not connected
-            while (mState != STATE_CONNECTED) {
+            while (state != STATE_CONNECTED) {
                 try {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
@@ -262,7 +266,7 @@ public class BluetoothService {
                 // If a connection was accepted
                 if (socket != null) {
                     synchronized (BluetoothService.this) {
-                        switch (mState) {
+                        switch (state) {
                             case STATE_LISTEN:
                             case STATE_CONNECTING:
                                 // Situation normal. Start the connected thread.
@@ -321,7 +325,7 @@ public class BluetoothService {
         public void run() {
             setName("ConnectThread");
             // Always cancel discovery because it will slow down a connection
-            mAdapter.cancelDiscovery();
+            bluetoothAdapter.cancelDiscovery();
             // Make a connection to the BluetoothSocket
             try {
                 // This is a blocking call and will only return on a
@@ -344,7 +348,7 @@ public class BluetoothService {
             }
             // Reset the ConnectThread because we're done
             synchronized (BluetoothService.this) {
-                mConnectThread = null;
+                connectThread = null;
             }
             // Start the connected thread
             connected(mmSocket, mmDevice);
@@ -390,7 +394,7 @@ public class BluetoothService {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    handler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     connectionLost();
                     break;
@@ -407,7 +411,7 @@ public class BluetoothService {
             try {
                 mmOutStream.write(buffer);
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+                handler.obtainMessage(MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
             } catch (IOException e) {
             }
         }

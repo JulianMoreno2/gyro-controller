@@ -2,19 +2,16 @@ package com.untref.infoindustrial.gyrocontroller.core.interactor;
 
 import android.bluetooth.BluetoothDevice;
 
-import com.untref.infoindustrial.gyrocontroller.core.infrastructure.bluetoothclient.BluetoothClient;
-import com.untref.infoindustrial.gyrocontroller.core.repository.DevicesRepository;
+import com.untref.infoindustrial.gyrocontroller.core.infrastructure.BluetoothService;
 
 import java.util.Set;
 
 public class DevicesInteractor {
 
-    private BluetoothClient bluetoothClient;
-    private DevicesRepository devicesRepository;
+    private BluetoothService bluetoothClient;
 
-    public DevicesInteractor(BluetoothClient bluetoothClient, DevicesRepository devicesRepository) {
+    public DevicesInteractor(BluetoothService bluetoothClient) {
         this.bluetoothClient = bluetoothClient;
-        this.devicesRepository = devicesRepository;
     }
 
     public void startDiscovery() {
@@ -22,19 +19,7 @@ public class DevicesInteractor {
             bluetoothClient.startDiscovery();
     }
 
-    public void addDevice(BluetoothDevice device) {
-        devicesRepository.addDevice(device);
-    }
-
-    public Set<BluetoothDevice> getDevices() {
-        return devicesRepository.getDevices();
-    }
-
     public Set<BluetoothDevice> getBoundedDevices() {
         return bluetoothClient.getBoundedDevices();
-    }
-
-    public void connectToPairDevice(BluetoothDevice device) {
-        bluetoothClient.connectToPairDevice(device);
     }
 }

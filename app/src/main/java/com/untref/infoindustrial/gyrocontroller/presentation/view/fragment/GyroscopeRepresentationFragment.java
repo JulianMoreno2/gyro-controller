@@ -47,25 +47,6 @@ public class GyroscopeRepresentationFragment extends Fragment implements Gyrosco
         super.onResume();
         glSurfaceView.onResume();
         this.gyroscopeRepresentationPresenter.onResume();
-        //simulateRotation();
-    }
-
-    private void simulateRotation() {
-        List<GyroscopeCoordinates> gyroscopeCoordinates = new ArrayList<>();
-        Random rand = new Random();
-
-        for (int x = 0; x < 2000; x++) {
-            float mX = rand.nextFloat();
-            float mY = rand.nextFloat();
-            float mZ = rand.nextFloat();
-            float mW = rand.nextFloat();
-
-            gyroscopeCoordinates.add(new GyroscopeCoordinates(mX, mY, mZ, -mW));
-        }
-
-        for (int i = 0; i < gyroscopeCoordinates.size(); i++) {
-            coordinatesPublishSubject.onNext(gyroscopeCoordinates.get(i));
-        }
     }
 
     @Override

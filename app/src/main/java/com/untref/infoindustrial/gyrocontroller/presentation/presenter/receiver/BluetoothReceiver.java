@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.DevicesPresenter;
 
-import java.util.List;
 import java.util.Set;
 
 public class BluetoothReceiver extends BroadcastReceiver {
@@ -30,7 +29,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
 
         } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             Log.d("DEVICE", "Action: Discovery finished");
-            Set<BluetoothDevice> devices = devicesPresenter.getDevices();
+            Set<BluetoothDevice> devices = devicesPresenter.getBoundedDevices();
             if (!devices.isEmpty()) {
                 devicesPresenter.getView().hideLoading();
                 devicesPresenter.getView().renderDevices(devices);
@@ -42,7 +41,6 @@ public class BluetoothReceiver extends BroadcastReceiver {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if(device.getName() != null) {
                 Log.d("DEVICE", "Action: Device found - " + device.getName());
-                devicesPresenter.addDevice(device);
             }
         }
     }

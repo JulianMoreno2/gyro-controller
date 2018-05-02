@@ -3,9 +3,8 @@ package com.untref.infoindustrial.gyrocontroller.core.action;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.untref.infoindustrial.gyrocontroller.core.infrastructure.bluetoothclient.BluetoothClient;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.approach.BluetoothService;
+import com.untref.infoindustrial.gyrocontroller.core.infrastructure.BluetoothService;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
