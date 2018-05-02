@@ -22,7 +22,9 @@ public class BluetoothReaderThread extends Thread {
     }
 
     public void run() {
-        // Entry point when thread.onStart() is called.
+
+        Log.d(TAG, "BluetoothReaderThread is running " + this);
+
         while (!this.isInterrupted()) {
 
             if ((inputStream == null)) {

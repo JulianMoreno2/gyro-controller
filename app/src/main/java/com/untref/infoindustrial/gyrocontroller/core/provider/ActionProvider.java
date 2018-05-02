@@ -27,7 +27,7 @@ public class ActionProvider {
     public static SendGyroscopeCoordinatesToBluetoothWhenArrivesAction getSendGyroscopeCoordinatesToBluetoothWhenArrivesAction() {
         if (sendGyroscopeCoordinatesToBluetoothWhenArrivesAction == null) {
             sendGyroscopeCoordinatesToBluetoothWhenArrivesAction = new SendGyroscopeCoordinatesToBluetoothWhenArrivesAction(
-                    Provider.provideBluetoothClient(),
+                    Provider.provideBluetoothService(),
                     Provider.provideGyroscopeCoordinatesPublishSubject()
             );
         }
@@ -47,8 +47,7 @@ public class ActionProvider {
     public static SendRandomGyroscopeCoordinatesAction getSendRandomGyroscopeCoordinates() {
         if (sendRandomGyroscopeCoordinatesAction == null) {
             sendRandomGyroscopeCoordinatesAction = new SendRandomGyroscopeCoordinatesAction(
-                    Provider.provideBluetoothClient()
-            );
+                    Provider.provideBluetoothService());
         }
         return sendRandomGyroscopeCoordinatesAction;
     }

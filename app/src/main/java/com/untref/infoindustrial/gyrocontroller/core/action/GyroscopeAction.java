@@ -27,7 +27,7 @@ public class GyroscopeAction {
                 .doOnComplete(() -> log("executeStop"));
     }
 
-    private int log(String message) {
-        return Log.d("DEBUG", message);
+    private void log(String message) {
+        Log.d("DEBUG", message);
     }
 }

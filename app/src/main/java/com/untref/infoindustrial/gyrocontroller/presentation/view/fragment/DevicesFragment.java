@@ -1,5 +1,6 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import butterknife.ButterKnife;
 
 public class DevicesFragment extends Fragment implements DevicesPresenter.View {
 
+    public static final String EXTRA_DEVICE_ADDRESS = "device_address";
     @BindView(R.id.rv_device)
     RecyclerView rv_device;
     @BindView(R.id.pv_devices)
@@ -47,7 +49,8 @@ public class DevicesFragment extends Fragment implements DevicesPresenter.View {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         devicesPresenter = new DevicesPresenter(getContext(),
-                new DevicesInteractor(Provider.provideBluetoothClient(), new DevicesRepository()));
+                new DevicesInteractor(Provider.provideBluetoothClient(), new DevicesRepository()),
+                Provider.provideBluetoothService());
         devicesPresenter.setView(this);
         devicesPresenter.onStartDiscovery();
     }
@@ -114,8 +117,13 @@ public class DevicesFragment extends Fragment implements DevicesPresenter.View {
     }
 
     @Override
-    public void pairDevice() {
-        //TODO: cambiar el texto del boton a Pair
+    public void pairDevice(String address) {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+
+        // Set result and finish this Activity
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override

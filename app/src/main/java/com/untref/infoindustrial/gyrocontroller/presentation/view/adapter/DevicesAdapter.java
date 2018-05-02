@@ -62,7 +62,6 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DevicesV
 
         holder.btnConnect.setOnClickListener(v -> {
             devicesPresenter.connectToPairDevice(holder.device);
-            devicesPresenter.getView().renderConcreteGyroscopeActivity();
         });
     }
 

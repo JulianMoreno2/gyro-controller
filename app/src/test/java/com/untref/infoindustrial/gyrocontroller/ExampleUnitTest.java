@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothDevice;
 import android.os.ParcelUuid;
 
 import com.untref.infoindustrial.gyrocontroller.core.infrastructure.bluetoothclient.BluetoothClient;
-import com.untref.infoindustrial.gyrocontroller.core.interactor.NavigateInteractor;
-import com.untref.infoindustrial.gyrocontroller.presentation.presenter.NavigatePresenter;
 
 import org.junit.Test;
 

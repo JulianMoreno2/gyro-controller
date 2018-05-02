@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
@@ -18,8 +19,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 public class ReceiverBluetoothSocketConnectionThread extends Thread {
 
-    // Debugging
-    private static final String TAG = "BluetoothChatService";
+    private static final String TAG = "DEVICE";
 
     // Name for the SDP record when creating server socket
     private static final String NAME_SECURE = "BluetoothChatSecure";
@@ -28,58 +28,57 @@ public class ReceiverBluetoothSocketConnectionThread extends Thread {
     // Unique UUID for this application
     private static final UUID MY_UUID_SECURE =
             UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
-    private static final UUID MY_UUID_INSECURE =
+    private static final UUID UUID_INSECURE =
             UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
-    // Constants that indicate the current connection state
     private static final int STATE_NONE = 0;       // we're doing nothing
     private static final int STATE_LISTEN = 1;     // now listening for incoming connections
     private static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
     private static final int STATE_CONNECTED = 3;  // now connected to a remote device
 
-    // Member fields
     private int state;
     private int newState;
 
-    // The local server socket
     private final BluetoothServerSocket bluetoothServerSocket;
-    private String mSocketType;
-    private final BluetoothAdapter bluetoothAdapter;
+    private String socketType;
     private final PublishSubject<BluetoothDevice> bluetoothDevicePublishSubject;
+    private final Handler incommingMessageHandler;
 
     public ReceiverBluetoothSocketConnectionThread(
             BluetoothAdapter bluetoothAdapter,
-            PublishSubject<BluetoothDevice> bluetoothDevicePublishSubject) {
+            PublishSubject<BluetoothDevice> bluetoothDevicePublishSubject,
+            Handler incommingMessageHandler) {
 
-        this.bluetoothAdapter = bluetoothAdapter;
         this.bluetoothDevicePublishSubject = bluetoothDevicePublishSubject;
+        this.incommingMessageHandler = incommingMessageHandler;
+        this.socketType = NAME_INSECURE;
 
         BluetoothServerSocket tmp = null;
 
-        // Create a new listening server socket
         try {
-            tmp = this.bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME_INSECURE, MY_UUID_INSECURE);
+            tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME_INSECURE, UUID_INSECURE);
         } catch (IOException e) {
-            Log.e(TAG, "Socket Type: " + mSocketType + "listen() failed", e);
+            Log.e(TAG, "Socket Type: " + socketType + " listen() failed", e);
         }
+
         bluetoothServerSocket = tmp;
         state = STATE_LISTEN;
     }
 
     public void run() {
-        Log.d(TAG, "Socket Type: " + mSocketType + "BEGIN mAcceptThread" + this);
-        setName("AcceptThread" + mSocketType);
+        Log.d(TAG, "Thread is running " + this);
+        setName("AcceptThread" + socketType);
 
-        BluetoothSocket socket = null;
+        BluetoothSocket socket;
 
         // Listen to the server socket if we're not connected
         while (state != STATE_CONNECTED) {
+            Log.d(TAG, "ReceiverBluetoothSocketConnection State: " + state);
             try {
-                // This is a blocking call and will only return on a
-                // successful connection or an exception
+                // This is a blocking call and will only return on a successful connection or an exception
                 socket = bluetoothServerSocket.accept();
             } catch (IOException e) {
-                Log.e(TAG, "Socket Type: " + mSocketType + "accept() failed", e);
+                Log.e(TAG, "Socket Type: " + socketType + "accept() failed", e);
                 break;
             }
 
@@ -89,13 +88,23 @@ public class ReceiverBluetoothSocketConnectionThread extends Thread {
                     switch (state) {
                         case STATE_LISTEN:
                         case STATE_CONNECTING:
-                            // Situation normal. Start the connected thread.
-                            bluetoothDevicePublishSubject.onNext(socket.getRemoteDevice());
+
+                            // Start a new thread that read from bluetooth input stream
+                            try {
+                                new BluetoothReaderThread(socket.getInputStream(), incommingMessageHandler).start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            //bluetoothDevicePublishSubject.onNext(socket.getRemoteDevice());
+                            state = STATE_CONNECTED;
+                            Log.d(TAG, "ReceiverBluetoothSocketConnection State: " + state);
                             break;
                         case STATE_NONE:
                         case STATE_CONNECTED:
                             // Either not ready or already connected. Terminate new socket.
                             try {
+                                Log.d(TAG, "ReceiverBluetoothSocketConnection State: " + state);
                                 socket.close();
                             } catch (IOException e) {
                                 Log.e(TAG, "Could not close unwanted socket", e);
@@ -106,15 +115,15 @@ public class ReceiverBluetoothSocketConnectionThread extends Thread {
             }
         }
 
-        Log.i(TAG, "END mAcceptThread, socket Type: " + mSocketType);
+        Log.i(TAG, "END AcceptThread, socket Type: " + socketType);
     }
 
     public void cancel() {
-        Log.d(TAG, "Socket Type" + mSocketType + "cancel " + this);
+        Log.d(TAG, "Thread is stopping " + this);
         try {
             bluetoothServerSocket.close();
         } catch (IOException e) {
-            Log.e(TAG, "Socket Type" + mSocketType + "close() of server failed", e);
+            Log.e(TAG, "Socket Type" + socketType + "close() of server failed", e);
         }
     }
 

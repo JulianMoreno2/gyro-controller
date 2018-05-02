@@ -6,41 +6,40 @@ import com.google.gson.Gson;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
 
 import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 public class ListenGyroscopeCoordinatesFromBluetoothAction {
 
-    private final Observable<String> observeBluetoothMessage;
-    private final PublishSubject<GyroscopeCoordinates> publishGyroscopeCoordinates;
+    private final Observable<String> bluetoothMessageObservable;
+    private final PublishSubject<GyroscopeCoordinates> gyroscopeCoordinatesPublishSubject;
     private final Gson gson;
 
     public ListenGyroscopeCoordinatesFromBluetoothAction(
-            Observable<String> observeBluetoothMessage,
-            PublishSubject<GyroscopeCoordinates> publishGyroscopeCoordinates) {
+            Observable<String> bluetoothMessageObservable,
+            PublishSubject<GyroscopeCoordinates> gyroscopeCoordinatesPublishSubject) {
 
-        this.observeBluetoothMessage = observeBluetoothMessage;
-        this.publishGyroscopeCoordinates = publishGyroscopeCoordinates;
+        this.bluetoothMessageObservable = bluetoothMessageObservable;
+        this.gyroscopeCoordinatesPublishSubject = gyroscopeCoordinatesPublishSubject;
         this.gson = new Gson();
     }
 
-    public Observable<GyroscopeCoordinates> execute() {
-        return this.observeBluetoothMessage
-                .subscribeOn(Schedulers.io())
+    public void execute() {
+        this.bluetoothMessageObservable
                 .doOnNext(this::log)
                 .map(this::fromJson)
-                .doOnNext(publishGyroscopeCoordinates::onNext);
+                .doOnNext(gyroscopeCoordinatesPublishSubject::onNext)
+                .subscribe();
     }
 
     private GyroscopeCoordinates fromJson(String message) {
         try {
             return gson.fromJson(message, GyroscopeCoordinates.class);
         } catch (Exception e) {
-            return new GyroscopeCoordinates(0,0,0,0);
+            return new GyroscopeCoordinates(0, 0, 0, 0);
         }
     }
 
-    private int log(String message) {
-        return Log.d("BL", "From: " + message);
+    private void log(String message) {
+        Log.d("DEVICE", "BL From: " + message);
     }
 }

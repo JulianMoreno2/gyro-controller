@@ -26,7 +26,7 @@ public class PairReceiver extends BroadcastReceiver {
 
             if (state == BluetoothDevice.BOND_BONDED && prevState == BluetoothDevice.BOND_BONDING) {
                 Log.d("DEVICE", "Device paired");
-                devicesPresenter.getView().pairDevice();
+                //devicesPresenter.getView().pairDevice();
             } else if (state == BluetoothDevice.BOND_NONE && prevState == BluetoothDevice.BOND_BONDED) {
                 Log.d("DEVICE", "Device paired");
                 devicesPresenter.getView().unPairDevice();

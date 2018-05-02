@@ -23,6 +23,7 @@ import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.HomeA
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.functions.Action;
 
 public class HomeFragment extends Fragment implements HomePresenter.View {
 
@@ -44,7 +45,9 @@ public class HomeFragment extends Fragment implements HomePresenter.View {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homePresenter = new HomePresenter(new HomeInteractor(Provider.provideBluetoothClient()));
+        homePresenter = new HomePresenter(
+                new HomeInteractor(Provider.provideBluetoothClient()),
+                Provider.provideBluetoothService());
         homePresenter.setView(this);
     }
 
@@ -114,6 +117,12 @@ public class HomeFragment extends Fragment implements HomePresenter.View {
 
         btn_server.setEnabled(false);
         btn_client.setEnabled(false);
+    }
+
+    @Override
+    public void renderGyroscopeRepresentationActivity() {
+        Intent intent = new Intent(getActivity(), GyroscopeRepresentationActivity.class);
+        startActivity(intent);
     }
 
     @Override

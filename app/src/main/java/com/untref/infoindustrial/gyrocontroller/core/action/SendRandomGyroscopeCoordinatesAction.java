@@ -1,10 +1,12 @@
 package com.untref.infoindustrial.gyrocontroller.core.action;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.untref.infoindustrial.gyrocontroller.core.infrastructure.bluetoothclient.BluetoothClient;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.approach.BluetoothService;
 
 import java.util.Random;
 
@@ -12,12 +14,12 @@ import io.reactivex.Single;
 
 public class SendRandomGyroscopeCoordinatesAction {
 
-    private final BluetoothClient bluetoothClient;
     private final Random rand;
     private final Gson gson;
+    private final BluetoothService bluetoothService;
 
-    public SendRandomGyroscopeCoordinatesAction(BluetoothClient bluetoothClient) {
-        this.bluetoothClient = bluetoothClient;
+    public SendRandomGyroscopeCoordinatesAction(BluetoothService bluetoothService) {
+        this.bluetoothService = bluetoothService;
         this.rand = new Random();
         this.gson = new Gson();
     }
@@ -25,7 +27,12 @@ public class SendRandomGyroscopeCoordinatesAction {
     public Single<String> execute() {
         return Single.fromCallable(this::createGyroscopeCoordinates)
                 .map(gson::toJson)
-                .doOnSuccess(bluetoothClient::send);
+                .doOnSuccess(this::log)
+                .doOnSuccess(s -> bluetoothService.write(s.getBytes()));
+    }
+
+    private void log(String message) {
+        Log.d("DEVICE", "BL RandomCoord To: " + message);
     }
 
     @NonNull

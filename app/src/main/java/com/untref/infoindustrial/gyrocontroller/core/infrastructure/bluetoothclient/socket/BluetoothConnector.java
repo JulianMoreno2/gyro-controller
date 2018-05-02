@@ -23,6 +23,9 @@ public class BluetoothConnector {
     private OutputStream outputStream;
     private InputStream inputStream;
 
+    private static final UUID UUID_INSECURE =
+            UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+
     private boolean connected = false;
 
     public BluetoothConnector(BluetoothAdapter bluetoothAdapter, BluetoothDevice bluetoothDevice, Handler handler) {
@@ -33,7 +36,6 @@ public class BluetoothConnector {
 
     /**
      * Connect to bluetooth device through a candidate uuid.
-     *
      * @return
      */
     public void connect() {
@@ -50,7 +52,7 @@ public class BluetoothConnector {
                     do {
                         UUID uuid = deviceUuids[counter].getUuid();
                         Log.d("DEVICE", "UUID connect?: " + uuid.toString());
-                        socket = device.createRfcommSocketToServiceRecord(uuid);
+                        socket = device.createRfcommSocketToServiceRecord(UUID_INSECURE);
                         try {
                             socket.connect();
                         } catch (IOException e) {
@@ -62,7 +64,7 @@ public class BluetoothConnector {
 
                     outputStream = socket.getOutputStream();
                     inputStream = socket.getInputStream();
-                    new BluetoothReaderThread(inputStream, handler).start();
+                    //new BluetoothReaderThread(inputStream, handler).start();
 
                     Log.d("DEVICE", "Connection success");
 
@@ -109,7 +111,6 @@ public class BluetoothConnector {
     public void send(String message) {
         try {
             outputStream.write(message.getBytes());
-            SystemClock.sleep(200);
         } catch (IOException e) {
             e.printStackTrace();
         }

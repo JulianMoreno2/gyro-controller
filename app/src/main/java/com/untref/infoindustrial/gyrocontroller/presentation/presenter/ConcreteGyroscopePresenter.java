@@ -38,12 +38,11 @@ public class ConcreteGyroscopePresenter extends Presenter<ConcreteGyroscopePrese
     public void onSendRandomGyroscopeCoordinates() {
         sendRandomGyroscopeCoordinates.execute()
                 .doOnSuccess(message -> getView().sendRandomGyroscopeCoordinates(message) )
-                .doOnSuccess(this::log)
                 .subscribe();
     }
 
     private int log(String message) {
-        return Log.d("DEBUG", message);
+        return Log.d("DEVICE", message);
     }
 
     public interface View extends Presenter.View {

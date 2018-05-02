@@ -5,21 +5,22 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.untref.infoindustrial.gyrocontroller.core.infrastructure.bluetoothclient.BluetoothClient;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.approach.BluetoothService;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SendGyroscopeCoordinatesToBluetoothWhenArrivesAction {
 
-    private final BluetoothClient bluetoothClient;
+    private BluetoothService bluetoothService;
     private final Observable<GyroscopeCoordinates> observeGyroscopeCoordinates;
     private final Gson gson;
 
     public SendGyroscopeCoordinatesToBluetoothWhenArrivesAction(
-            BluetoothClient bluetoothClient,
+            BluetoothService bluetoothService,
             Observable<GyroscopeCoordinates> observeGyroscopeCoordinates) {
 
-        this.bluetoothClient = bluetoothClient;
+        this.bluetoothService = bluetoothService;
         this.observeGyroscopeCoordinates = observeGyroscopeCoordinates;
         this.gson = new Gson();
     }
@@ -28,11 +29,11 @@ public class SendGyroscopeCoordinatesToBluetoothWhenArrivesAction {
         return this.observeGyroscopeCoordinates
                 .map(gson::toJson)
                 .doOnNext(this::log)
-                .doOnNext(bluetoothClient::send)
+                .doOnNext(message -> bluetoothService.write(message.getBytes()))
                 .subscribeOn(Schedulers.io());
     }
 
-    private int log(String message) {
-        return Log.d("BL", "To: " + message);
+    private void log(String message) {
+        Log.d("DEVICE", "BL To: " + message);
     }
 }

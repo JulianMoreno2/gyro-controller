@@ -21,7 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.DevicesActivity" />
-        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.NavigateActivity" />
         <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.ConcreteGyroscopeActivity" />
         <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.GyroscopeRepresentationActivity" />
     </application>

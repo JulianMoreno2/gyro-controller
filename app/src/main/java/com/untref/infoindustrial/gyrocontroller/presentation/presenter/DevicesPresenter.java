@@ -11,9 +11,9 @@ import com.untref.infoindustrial.gyrocontroller.core.interactor.DevicesInteracto
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.receiver.BluetoothReceiver;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.receiver.PairReceiver;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.adapter.DevicesAdapter;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.approach.BluetoothService;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class DevicesPresenter extends Presenter<DevicesPresenter.View> {
@@ -23,9 +23,13 @@ public class DevicesPresenter extends Presenter<DevicesPresenter.View> {
 
     private BroadcastReceiver pairReceiver;
     private BroadcastReceiver bluetoothReceiver;
+    private BluetoothService bluetoothService;
 
-    public DevicesPresenter(Context context, DevicesInteractor devicesInteractor) {
+    public DevicesPresenter(Context context,
+                            DevicesInteractor devicesInteractor,
+                            BluetoothService bluetoothService) {
         this.devicesInteractor = devicesInteractor;
+        this.bluetoothService = bluetoothService;
 
         devicesAdapter = new DevicesAdapter(this);
 
@@ -77,7 +81,7 @@ public class DevicesPresenter extends Presenter<DevicesPresenter.View> {
     }
 
     public void connectToPairDevice(BluetoothDevice device) {
-        this.devicesInteractor.connectToPairDevice(device);
+        this.bluetoothService.connect(device, () -> getView().renderConcreteGyroscopeActivity());
     }
 
     public Set<BluetoothDevice> getBoundedDevices() {
@@ -98,7 +102,7 @@ public class DevicesPresenter extends Presenter<DevicesPresenter.View> {
 
         void renderDevices(Set<BluetoothDevice> devices);
 
-        void pairDevice();
+        void pairDevice(String message);
 
         void unPairDevice();
 

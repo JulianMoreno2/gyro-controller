@@ -4,13 +4,15 @@ import android.content.Context;
 
 import com.untref.infoindustrial.gyrocontroller.core.interactor.HomeInteractor;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.HomeActivity;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.approach.BluetoothService;
 
 public class HomePresenter extends Presenter<HomePresenter.View> {
 
     private HomeInteractor interactor;
 
-    public HomePresenter(HomeInteractor interactor) {
+    public HomePresenter(HomeInteractor interactor, BluetoothService bluetoothService) {
         this.interactor = interactor;
+        bluetoothService.start(() -> getView().renderGyroscopeRepresentationActivity());
     }
 
     public void onEnableBluetooth(Context context, HomeActivity homeActivity) {
@@ -31,5 +33,7 @@ public class HomePresenter extends Presenter<HomePresenter.View> {
         void enableBluetooth();
 
         void disableBluetooth();
+
+        void renderGyroscopeRepresentationActivity();
     }
 }

@@ -37,9 +37,7 @@ public class GyroscopeRepresentationFragment extends Fragment implements Gyrosco
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gyroscopeRepresentationPresenter = new GyroscopeRepresentationPresenter(
-                ActionProvider.getListenGyroscopeCoordinatesFromBluetoothAction(),
-                ActionProvider.getListenBluetoothDeviceConnectionAction(),
-                Provider.provideReceiverBluetoothSocketConnectionThread()
+                ActionProvider.getListenGyroscopeCoordinatesFromBluetoothAction()
         );
         gyroscopeRepresentationPresenter.setView(this);
     }
