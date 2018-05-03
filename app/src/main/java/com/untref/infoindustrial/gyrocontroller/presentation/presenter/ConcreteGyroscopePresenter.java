@@ -1,34 +1,44 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.presenter;
 
-import com.untref.infoindustrial.gyrocontroller.core.action.GyroscopeAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeTranslationAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeCoordinatesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.Translation;
 
 public class ConcreteGyroscopePresenter extends Presenter<ConcreteGyroscopePresenter.View> {
 
-    private final GyroscopeAction gyroscopeAction;
-    private final SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
+    private final StartGyroscope startGyroscope;
+    private final SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrives;
     private final SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinates;
+    private final SendGyroscopeTranslationAction sendGyroscopeTranslationAction;
 
-    public ConcreteGyroscopePresenter(GyroscopeAction gyroscopeAction,
-                                      SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrivesAction,
-                                      SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinates) {
-        this.gyroscopeAction = gyroscopeAction;
-        this.sendGyroscopeCoordinatesToBluetoothWhenArrivesAction = sendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
+    public ConcreteGyroscopePresenter(StartGyroscope startGyroscope,
+                                      SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrives,
+                                      SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinates,
+                                      SendGyroscopeTranslationAction sendGyroscopeTranslationAction) {
+        this.startGyroscope = startGyroscope;
+        this.sendGyroscopeCoordinatesToBluetoothWhenArrives = sendGyroscopeCoordinatesToBluetoothWhenArrives;
         this.sendRandomGyroscopeCoordinates = sendRandomGyroscopeCoordinates;
+        this.sendGyroscopeTranslationAction = sendGyroscopeTranslationAction;
     }
 
     public void onStart() {
-        sendGyroscopeCoordinatesToBluetoothWhenArrivesAction.execute()
+        sendGyroscopeCoordinatesToBluetoothWhenArrives.execute()
                 .subscribe();
 
-        gyroscopeAction.execute()
+        startGyroscope.execute()
                 .subscribe();
     }
 
     public void onSendRandomGyroscopeCoordinates() {
         sendRandomGyroscopeCoordinates.execute()
                 .doOnSuccess(message -> getView().sendRandomGyroscopeCoordinates(message))
+                .subscribe();
+    }
+
+    public void onSendGyroscopeTranslation(Translation translation) {
+        sendGyroscopeTranslationAction.execute(translation)
                 .subscribe();
     }
 

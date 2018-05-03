@@ -4,11 +4,11 @@ import com.untref.infoindustrial.gyrocontroller.core.sensor.CalibratedGyroscope;
 
 import io.reactivex.Completable;
 
-public class GyroscopeAction {
+public class StartGyroscope {
 
     private final CalibratedGyroscope calibratedGyroscope;
 
-    public GyroscopeAction(CalibratedGyroscope calibratedGyroscope) {
+    public StartGyroscope(CalibratedGyroscope calibratedGyroscope) {
         this.calibratedGyroscope = calibratedGyroscope;
     }
 

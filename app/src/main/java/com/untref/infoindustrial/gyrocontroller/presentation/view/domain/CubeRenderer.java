@@ -1,25 +1,34 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.domain;
 
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 public class CubeRenderer implements GLSurfaceView.Renderer {
 
     private Cube cube;
-    private final Observable<GyroscopeCoordinates> observeGyroscopeCoordinates;
+    private final Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable;
+    private final Observable<GyroscopeTranslation> gyroscopeTranslationObservable;
     private GyroscopeCoordinates coords;
+    private GyroscopeTranslation translation;
 
-    public CubeRenderer(Observable<GyroscopeCoordinates> observeGyroscopeCoordinates) {
-        this.observeGyroscopeCoordinates = observeGyroscopeCoordinates;
+    private final float[] modelMatrix = new float[16];
+
+    public CubeRenderer(Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable,
+                        Observable<GyroscopeTranslation> gyroscopeTranslationObservable) {
+
+        this.gyroscopeCoordinatesObservable = gyroscopeCoordinatesObservable;
+        this.gyroscopeTranslationObservable = gyroscopeTranslationObservable;
         this.coords = new GyroscopeCoordinates(0, 0, 0, 0);
+        this.translation = new GyroscopeTranslation(0, 0, 0);
     }
 
     @Override
@@ -35,6 +44,9 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, this.translation.getX(), this.translation.getY(), this.translation.getZ());
 
         this.cube.draw(gl);
     }
@@ -85,8 +97,12 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glDisable(GL10.GL_DITHER);
         gl.glClearColor(1f, 1f, 1f, 1f);
 
-        observeGyroscopeCoordinates
+        gyroscopeCoordinatesObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(coords -> this.coords = coords);
+
+        gyroscopeTranslationObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(translation -> this.translation = translation);
     }
 }

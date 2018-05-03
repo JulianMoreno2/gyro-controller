@@ -9,36 +9,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
 import com.untref.infoindustrial.gyrocontroller.core.provider.ActionProvider;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.GyroscopeRepresentationPresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.CubeRenderer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import butterknife.ButterKnife;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.Observable;
 
 public class GyroscopeRepresentationFragment extends Fragment implements GyroscopeRepresentationPresenter.View {
 
     private GLSurfaceView glSurfaceView;
-    private PublishSubject<GyroscopeCoordinates> coordinatesPublishSubject;
+    private Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable;
+    private Observable<GyroscopeTranslation> gyroscopeTranslationObservable;
     private GyroscopeRepresentationPresenter gyroscopeRepresentationPresenter;
 
     public GyroscopeRepresentationFragment() {
         setHasOptionsMenu(true);
-        coordinatesPublishSubject = Provider.provideGyroscopeCoordinatesPublishSubject();
+        gyroscopeCoordinatesObservable = Provider.provideGyroscopeCoordinatesPublishSubject();
+        gyroscopeTranslationObservable = Provider.provideGyroscopeTranslationPublishSubject();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         gyroscopeRepresentationPresenter = new GyroscopeRepresentationPresenter(
-                ActionProvider.getListenGyroscopeCoordinatesFromBluetoothAction()
-        );
+                ActionProvider.getListenGyroscopeCoordinatesFromBluetoothAction(),
+                ActionProvider.getListenGyroscopeTranslationFromBluetoothAction());
         gyroscopeRepresentationPresenter.setView(this);
     }
 
@@ -58,7 +57,7 @@ public class GyroscopeRepresentationFragment extends Fragment implements Gyrosco
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        CubeRenderer renderer = new CubeRenderer(coordinatesPublishSubject);
+        CubeRenderer renderer = new CubeRenderer(gyroscopeCoordinatesObservable, gyroscopeTranslationObservable);
         glSurfaceView = new GLSurfaceView(getActivity());
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glSurfaceView.setRenderer(renderer);

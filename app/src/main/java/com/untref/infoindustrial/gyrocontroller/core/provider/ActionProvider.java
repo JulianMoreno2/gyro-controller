@@ -2,24 +2,28 @@ package com.untref.infoindustrial.gyrocontroller.core.provider;
 
 import android.hardware.SensorManager;
 
-import com.untref.infoindustrial.gyrocontroller.core.action.GyroscopeAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeCoordinatesFromBluetoothAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeTranslationFromBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeTranslationAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeCoordinatesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.CalibratedGyroscope;
 
 public class ActionProvider {
 
-    private static GyroscopeAction gyroscopeAction;
+    private static StartGyroscope startGyroscope;
     private static SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
     private static ListenGyroscopeCoordinatesFromBluetoothAction listenGyroscopeCoordinatesFromBluetoothAction;
     private static SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinatesAction;
+    private static SendGyroscopeTranslationAction sendGyroscopeTranslationAction;
+    private static ListenGyroscopeTranslationFromBluetoothAction listenGyroscopeTranslationFromBluetoothAction;
 
-    public static GyroscopeAction getStartGyroscopeAction(SensorManager sensorManager) {
-        if (gyroscopeAction == null) {
-            gyroscopeAction = new GyroscopeAction(new CalibratedGyroscope(sensorManager, Provider.provideGyroscopeCoordinatesPublishSubject()));
+    public static StartGyroscope getStartGyroscopeAction(SensorManager sensorManager) {
+        if (startGyroscope == null) {
+            startGyroscope = new StartGyroscope(new CalibratedGyroscope(sensorManager, Provider.provideGyroscopeCoordinatesPublishSubject()));
         }
-        return gyroscopeAction;
+        return startGyroscope;
     }
 
     public static SendGyroscopeCoordinatesToBluetoothWhenArrivesAction getSendGyroscopeCoordinatesToBluetoothWhenArrivesAction() {
@@ -48,5 +52,23 @@ public class ActionProvider {
                     Provider.provideBluetoothService());
         }
         return sendRandomGyroscopeCoordinatesAction;
+    }
+
+    public static SendGyroscopeTranslationAction getSendGyroscopeTranslationAction() {
+        if (sendGyroscopeTranslationAction == null) {
+            sendGyroscopeTranslationAction = new SendGyroscopeTranslationAction(
+                    Provider.provideBluetoothService());
+        }
+        return sendGyroscopeTranslationAction;
+    }
+
+    public static ListenGyroscopeTranslationFromBluetoothAction getListenGyroscopeTranslationFromBluetoothAction() {
+        if (listenGyroscopeTranslationFromBluetoothAction == null) {
+            listenGyroscopeTranslationFromBluetoothAction = new ListenGyroscopeTranslationFromBluetoothAction(
+                    Provider.provideBluetoothReaderPublishSubject(),
+                    Provider.provideGyroscopeTranslationPublishSubject()
+            );
+        }
+        return listenGyroscopeTranslationFromBluetoothAction;
     }
 }

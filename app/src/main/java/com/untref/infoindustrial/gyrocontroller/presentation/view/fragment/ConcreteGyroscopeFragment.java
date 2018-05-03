@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.provider.ActionProvider;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.Translation;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.ConcreteGyroscopePresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.ConcreteGyroscopeActivity;
 
@@ -28,6 +29,15 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
     @BindView(R.id.log_textview)
     TextView logTextView;
 
+    @BindView(R.id.btn_left)
+    Button btn_left;
+    @BindView(R.id.btn_right)
+    Button btn_right;
+    @BindView(R.id.btn_up)
+    Button btn_up;
+    @BindView(R.id.btn_down)
+    Button btn_down;
+
     private ConcreteGyroscopePresenter concreteGyroscopePresenter;
 
     public ConcreteGyroscopeFragment() {
@@ -41,7 +51,8 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
         concreteGyroscopePresenter = new ConcreteGyroscopePresenter(
                 ActionProvider.getStartGyroscopeAction(sensorManager),
                 ActionProvider.getSendGyroscopeCoordinatesToBluetoothWhenArrivesAction(),
-                ActionProvider.getSendRandomGyroscopeCoordinates());
+                ActionProvider.getSendRandomGyroscopeCoordinates(),
+                ActionProvider.getSendGyroscopeTranslationAction());
 
         concreteGyroscopePresenter.setView(this);
     }
@@ -66,6 +77,11 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
         btn_start.setOnClickListener(v -> concreteGyroscopePresenter.onStart());
         btn_send_coord.setOnClickListener(v ->
                 concreteGyroscopePresenter.onSendRandomGyroscopeCoordinates());
+
+        btn_left.setOnClickListener(v -> concreteGyroscopePresenter.onSendGyroscopeTranslation(Translation.LEFT));
+        btn_right.setOnClickListener(v -> concreteGyroscopePresenter.onSendGyroscopeTranslation(Translation.RIGHT));
+        btn_up.setOnClickListener(v -> concreteGyroscopePresenter.onSendGyroscopeTranslation(Translation.UP));
+        btn_down.setOnClickListener(v -> concreteGyroscopePresenter.onSendGyroscopeTranslation(Translation.DOWN));
     }
 
     @Override
