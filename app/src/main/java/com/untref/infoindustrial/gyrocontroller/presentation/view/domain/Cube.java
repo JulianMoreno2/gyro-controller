@@ -15,6 +15,7 @@ public class Cube {
     private ByteBuffer mIndexBuffer;
 
     public Cube() {
+
         final float vertices[] = {
                 -V_SIZE, -V_SIZE, -V_SIZE,//0
                 V_SIZE, -V_SIZE, -V_SIZE, //1

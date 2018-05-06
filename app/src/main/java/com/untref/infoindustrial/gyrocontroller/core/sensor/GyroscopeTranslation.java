@@ -23,4 +23,9 @@ public class GyroscopeTranslation {
     public float getZ() {
         return z;
     }
+
+    public void sum(GyroscopeTranslation translation) {
+        this.x += translation.getX();
+        this.y += translation.getY();
+    }
 }

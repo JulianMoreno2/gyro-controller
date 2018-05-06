@@ -1,7 +1,6 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.domain;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
@@ -19,8 +18,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
     private final Observable<GyroscopeTranslation> gyroscopeTranslationObservable;
     private GyroscopeCoordinates coords;
     private GyroscopeTranslation translation;
-
-    private final float[] modelMatrix = new float[16];
+    private boolean isTranslationActive = true;
 
     public CubeRenderer(Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable,
                         Observable<GyroscopeTranslation> gyroscopeTranslationObservable) {
@@ -38,47 +36,27 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        activeDistantView(gl);
-        //activeInsideView(gl);
+        translate(gl, translation);
         rotate(gl, coords);
 
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, this.translation.getX(), this.translation.getY(), this.translation.getZ());
-
         this.cube.draw(gl);
     }
 
-    private void activeDistantView(GL10 gl) {
-        float dist = 3;
-        gl.glTranslatef(0, 0, -dist);
-    }
+    private void translate(GL10 gl, GyroscopeTranslation translation) {
+        float depth = 3;
 
-    private void activeInsideView(GL10 gl) {
-        float dist = 3;
-        drawTranslatedCube(gl, 0, 0, -dist);
-        drawTranslatedCube(gl, 0, 0, dist);
-        drawTranslatedCube(gl, 0, -dist, 0);
-        drawTranslatedCube(gl, 0, dist, 0);
-        drawTranslatedCube(gl, -dist, 0, 0);
-        drawTranslatedCube(gl, dist, 0, 0);
+        if (isTranslationActive) {
+            gl.glTranslatef(translation.getX(), translation.getY(), -depth);
+        } else {
+            gl.glTranslatef(0, 0, -depth);
+        }
     }
 
     private void rotate(GL10 gl, GyroscopeCoordinates coords) {
         gl.glRotatef((float) (2.0f * Math.acos(coords.getW()) * 180.0f / Math.PI), coords.getX(), coords.getY(), coords.getZ());
-    }
-
-    private void drawTranslatedCube(GL10 gl, float translateX, float translateY, float translateZ) {
-        gl.glPushMatrix();
-        gl.glTranslatef(translateX, translateY, translateZ);
-
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-
-        cube.draw(gl);
-        gl.glPopMatrix();
     }
 
     @Override
@@ -99,10 +77,12 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
         gyroscopeCoordinatesObservable
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(gyroscopeCoordinates -> this.isTranslationActive = false)
                 .subscribe(coords -> this.coords = coords);
 
         gyroscopeTranslationObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(translation -> this.translation = translation);
+                .doOnNext(gyroscopeTranslation -> this.isTranslationActive = true)
+                .subscribe(translation -> this.translation.sum(translation));
     }
 }

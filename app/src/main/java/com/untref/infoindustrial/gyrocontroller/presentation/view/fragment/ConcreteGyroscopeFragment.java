@@ -52,7 +52,7 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
                 ActionProvider.getStartGyroscopeAction(sensorManager),
                 ActionProvider.getSendGyroscopeCoordinatesToBluetoothWhenArrivesAction(),
                 ActionProvider.getSendRandomGyroscopeCoordinates(),
-                ActionProvider.getSendGyroscopeTranslationAction());
+                ActionProvider.getSendGyroscopeTranslationToBluetoothAction());
 
         concreteGyroscopePresenter.setView(this);
     }

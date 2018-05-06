@@ -1,7 +1,7 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.presenter;
 
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
-import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeTranslationAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeTranslationToBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeCoordinatesAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.Translation;
@@ -11,16 +11,16 @@ public class ConcreteGyroscopePresenter extends Presenter<ConcreteGyroscopePrese
     private final StartGyroscope startGyroscope;
     private final SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrives;
     private final SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinates;
-    private final SendGyroscopeTranslationAction sendGyroscopeTranslationAction;
+    private final SendGyroscopeTranslationToBluetoothAction sendGyroscopeTranslationToBluetoothAction;
 
     public ConcreteGyroscopePresenter(StartGyroscope startGyroscope,
                                       SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrives,
                                       SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinates,
-                                      SendGyroscopeTranslationAction sendGyroscopeTranslationAction) {
+                                      SendGyroscopeTranslationToBluetoothAction sendGyroscopeTranslationToBluetoothAction) {
         this.startGyroscope = startGyroscope;
         this.sendGyroscopeCoordinatesToBluetoothWhenArrives = sendGyroscopeCoordinatesToBluetoothWhenArrives;
         this.sendRandomGyroscopeCoordinates = sendRandomGyroscopeCoordinates;
-        this.sendGyroscopeTranslationAction = sendGyroscopeTranslationAction;
+        this.sendGyroscopeTranslationToBluetoothAction = sendGyroscopeTranslationToBluetoothAction;
     }
 
     public void onStart() {
@@ -38,7 +38,7 @@ public class ConcreteGyroscopePresenter extends Presenter<ConcreteGyroscopePrese
     }
 
     public void onSendGyroscopeTranslation(Translation translation) {
-        sendGyroscopeTranslationAction.execute(translation)
+        sendGyroscopeTranslationToBluetoothAction.execute(translation)
                 .subscribe();
     }
 

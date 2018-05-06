@@ -10,15 +10,15 @@ import com.untref.infoindustrial.gyrocontroller.core.sensor.Translation;
 
 import io.reactivex.Single;
 
-public class SendGyroscopeTranslationAction {
+public class SendGyroscopeTranslationToBluetoothAction {
 
-    private static final float TRANSLATE = 0.5f;
+    private static final float TRANSLATE = 0.1f;
     private static final float NONE = 0f;
 
     private final BluetoothService bluetoothService;
     private final Gson gson;
 
-    public SendGyroscopeTranslationAction(BluetoothService bluetoothService) {
+    public SendGyroscopeTranslationToBluetoothAction(BluetoothService bluetoothService) {
         this.bluetoothService = bluetoothService;
         this.gson = new Gson();
     }
