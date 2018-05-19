@@ -24,6 +24,9 @@ public class ConcreteGyroscopePresenter extends Presenter<ConcreteGyroscopePrese
     }
 
     public void onStart() {
+
+        getView().start();
+
         sendGyroscopeCoordinatesToBluetoothWhenArrives.execute()
                 .subscribe();
 

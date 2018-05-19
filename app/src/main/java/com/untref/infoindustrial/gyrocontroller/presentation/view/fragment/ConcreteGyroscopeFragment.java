@@ -26,8 +26,6 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
     Button btn_start;
     @BindView(R.id.btn_send_coord)
     Button btn_send_coord;
-    @BindView(R.id.log_textview)
-    TextView logTextView;
 
     @BindView(R.id.btn_left)
     Button btn_left;
@@ -91,12 +89,10 @@ public class ConcreteGyroscopeFragment extends Fragment implements ConcreteGyros
 
     @Override
     public void start() {
-        logTextView.append("STARTING\n");
         btn_start.setEnabled(false);
     }
 
     @Override
     public void sendRandomGyroscopeCoordinates(String message) {
-        logTextView.append(message + "\n");
     }
 }
