@@ -1,6 +1,6 @@
 package com.untref.infoindustrial.gyrocontroller.core.action;
 
-import com.untref.infoindustrial.gyrocontroller.core.sensor.CalibratedGyroscope;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.CalibratedGyroscope;
 
 import io.reactivex.Completable;
 

@@ -4,20 +4,20 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-public class ListenGyroscopeTranslationFromBluetoothAction {
+public class ListenAccelerometerTranslationFromBluetoothAction {
 
     private final Observable<String> bluetoothMessageObservable;
-    private final PublishSubject<GyroscopeTranslation> gyroscopeTranslationPublishSubject;
+    private final PublishSubject<AccelerometerTranslation> gyroscopeTranslationPublishSubject;
     private final Gson gson;
 
-    public ListenGyroscopeTranslationFromBluetoothAction(
+    public ListenAccelerometerTranslationFromBluetoothAction(
             Observable<String> bluetoothMessageObservable,
-            PublishSubject<GyroscopeTranslation> gyroscopeTranslationPublishSubject) {
+            PublishSubject<AccelerometerTranslation> gyroscopeTranslationPublishSubject) {
 
         this.bluetoothMessageObservable = bluetoothMessageObservable;
         this.gyroscopeTranslationPublishSubject = gyroscopeTranslationPublishSubject;
@@ -28,15 +28,15 @@ public class ListenGyroscopeTranslationFromBluetoothAction {
         this.bluetoothMessageObservable
                 .doOnNext(this::log)
                 .filter(this::isValidJson)
-                .map(message -> this.gson.fromJson(message, GyroscopeTranslation.class))
+                .map(message -> this.gson.fromJson(message, AccelerometerTranslation.class))
                 .doOnNext(gyroscopeTranslationPublishSubject::onNext)
                 .subscribe();
     }
 
     private boolean isValidJson(String message) {
         try {
-            GyroscopeTranslation gyroscopeTranslation = gson.fromJson(message, GyroscopeTranslation.class);
-            return gyroscopeTranslation != null;
+            AccelerometerTranslation accelerometerTranslation = gson.fromJson(message, AccelerometerTranslation.class);
+            return accelerometerTranslation != null;
         } catch (JsonSyntaxException e) {
             return false;
         }

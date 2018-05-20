@@ -2,73 +2,97 @@ package com.untref.infoindustrial.gyrocontroller.core.provider;
 
 import android.hardware.SensorManager;
 
-import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeCoordinatesFromBluetoothAction;
-import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeTranslationFromBluetoothAction;
-import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
-import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeTranslationToBluetoothAction;
-import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeCoordinatesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeRotationFromBluetoothAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.ListenAccelerometerTranslationFromBluetoothAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationToBluetoothWhenArrivesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeRotationToBluetoothWhenArrivesAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeRotationAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.StartAccelerometer;
 import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.CalibratedGyroscope;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerCompass;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.CalibratedGyroscope;
 
 public class ActionProvider {
 
     private static StartGyroscope startGyroscope;
-    private static SendGyroscopeCoordinatesToBluetoothWhenArrivesAction sendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
-    private static ListenGyroscopeCoordinatesFromBluetoothAction listenGyroscopeCoordinatesFromBluetoothAction;
-    private static SendRandomGyroscopeCoordinatesAction sendRandomGyroscopeCoordinatesAction;
-    private static SendGyroscopeTranslationToBluetoothAction sendGyroscopeTranslationToBluetoothAction;
-    private static ListenGyroscopeTranslationFromBluetoothAction listenGyroscopeTranslationFromBluetoothAction;
+    private static SendGyroscopeRotationToBluetoothWhenArrivesAction sendGyroscopeRotationToBluetoothWhenArrivesAction;
+    private static ListenGyroscopeRotationFromBluetoothAction listenGyroscopeRotationFromBluetoothAction;
+    private static SendRandomGyroscopeRotationAction sendRandomGyroscopeRotationAction;
+    private static SendAccelerometerTranslationAction sendAccelerometerTranslationAction;
+    private static ListenAccelerometerTranslationFromBluetoothAction listenAccelerometerTranslationFromBluetoothAction;
+    private static SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrivesAction;
+    private static StartAccelerometer startAccelerometer;
 
     public static StartGyroscope getStartGyroscopeAction(SensorManager sensorManager) {
         if (startGyroscope == null) {
-            startGyroscope = new StartGyroscope(new CalibratedGyroscope(sensorManager, Provider.provideGyroscopeCoordinatesPublishSubject()));
+            startGyroscope = new StartGyroscope(new CalibratedGyroscope(sensorManager,
+                    Provider.provideGyroscopeRotationPublishSubject()));
         }
         return startGyroscope;
     }
 
-    public static SendGyroscopeCoordinatesToBluetoothWhenArrivesAction getSendGyroscopeCoordinatesToBluetoothWhenArrivesAction() {
-        if (sendGyroscopeCoordinatesToBluetoothWhenArrivesAction == null) {
-            sendGyroscopeCoordinatesToBluetoothWhenArrivesAction = new SendGyroscopeCoordinatesToBluetoothWhenArrivesAction(
+    public static SendGyroscopeRotationToBluetoothWhenArrivesAction getSendGyroscopeRotationToBluetoothWhenArrivesAction() {
+        if (sendGyroscopeRotationToBluetoothWhenArrivesAction == null) {
+            sendGyroscopeRotationToBluetoothWhenArrivesAction = new SendGyroscopeRotationToBluetoothWhenArrivesAction(
                     Provider.provideBluetoothService(),
-                    Provider.provideGyroscopeCoordinatesPublishSubject()
+                    Provider.provideGyroscopeRotationPublishSubject()
             );
         }
-        return sendGyroscopeCoordinatesToBluetoothWhenArrivesAction;
+        return sendGyroscopeRotationToBluetoothWhenArrivesAction;
     }
 
-    public static ListenGyroscopeCoordinatesFromBluetoothAction getListenGyroscopeCoordinatesFromBluetoothAction() {
-        if (listenGyroscopeCoordinatesFromBluetoothAction == null) {
-            listenGyroscopeCoordinatesFromBluetoothAction = new ListenGyroscopeCoordinatesFromBluetoothAction(
+    public static ListenGyroscopeRotationFromBluetoothAction getListenGyroscopeRotationFromBluetoothAction() {
+        if (listenGyroscopeRotationFromBluetoothAction == null) {
+            listenGyroscopeRotationFromBluetoothAction = new ListenGyroscopeRotationFromBluetoothAction(
                     Provider.provideBluetoothReaderPublishSubject(),
-                    Provider.provideGyroscopeCoordinatesPublishSubject()
+                    Provider.provideGyroscopeRotationPublishSubject()
             );
         }
-        return listenGyroscopeCoordinatesFromBluetoothAction;
+        return listenGyroscopeRotationFromBluetoothAction;
     }
 
-    public static SendRandomGyroscopeCoordinatesAction getSendRandomGyroscopeCoordinates() {
-        if (sendRandomGyroscopeCoordinatesAction == null) {
-            sendRandomGyroscopeCoordinatesAction = new SendRandomGyroscopeCoordinatesAction(
+    public static SendRandomGyroscopeRotationAction getSendRandomGyroscopeRotation() {
+        if (sendRandomGyroscopeRotationAction == null) {
+            sendRandomGyroscopeRotationAction = new SendRandomGyroscopeRotationAction(
                     Provider.provideBluetoothService());
         }
-        return sendRandomGyroscopeCoordinatesAction;
+        return sendRandomGyroscopeRotationAction;
     }
 
-    public static SendGyroscopeTranslationToBluetoothAction getSendGyroscopeTranslationToBluetoothAction() {
-        if (sendGyroscopeTranslationToBluetoothAction == null) {
-            sendGyroscopeTranslationToBluetoothAction = new SendGyroscopeTranslationToBluetoothAction(
+    public static SendAccelerometerTranslationAction getSendAccelerometerTranslationAction() {
+        if (sendAccelerometerTranslationAction == null) {
+            sendAccelerometerTranslationAction = new SendAccelerometerTranslationAction(
                     Provider.provideBluetoothService());
         }
-        return sendGyroscopeTranslationToBluetoothAction;
+        return sendAccelerometerTranslationAction;
     }
 
-    public static ListenGyroscopeTranslationFromBluetoothAction getListenGyroscopeTranslationFromBluetoothAction() {
-        if (listenGyroscopeTranslationFromBluetoothAction == null) {
-            listenGyroscopeTranslationFromBluetoothAction = new ListenGyroscopeTranslationFromBluetoothAction(
+    public static ListenAccelerometerTranslationFromBluetoothAction getListenAccelerometerTranslationFromBluetoothAction() {
+        if (listenAccelerometerTranslationFromBluetoothAction == null) {
+            listenAccelerometerTranslationFromBluetoothAction = new ListenAccelerometerTranslationFromBluetoothAction(
                     Provider.provideBluetoothReaderPublishSubject(),
-                    Provider.provideGyroscopeTranslationPublishSubject()
+                    Provider.provideAccelerometerTranslationPublishSubject()
             );
         }
-        return listenGyroscopeTranslationFromBluetoothAction;
+        return listenAccelerometerTranslationFromBluetoothAction;
+    }
+
+    public static SendAccelerometerTranslationToBluetoothWhenArrivesAction getSendAccelerometerTranslationToBluetoothWhenArrivesAction() {
+        if (sendAccelerometerTranslationToBluetoothWhenArrivesAction == null) {
+            sendAccelerometerTranslationToBluetoothWhenArrivesAction = new SendAccelerometerTranslationToBluetoothWhenArrivesAction(
+                    Provider.provideBluetoothService(),
+                    Provider.provideAccelerometerTranslationPublishSubject()
+            );
+        }
+        return sendAccelerometerTranslationToBluetoothWhenArrivesAction;
+    }
+
+    public static StartAccelerometer getStartAccelerometerAction(SensorManager sensorManager) {
+        if (startAccelerometer == null) {
+            startAccelerometer = new StartAccelerometer(new AccelerometerCompass(sensorManager,
+                    Provider.provideAccelerometerTranslationPublishSubject()));
+        }
+        return startAccelerometer;
     }
 }

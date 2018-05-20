@@ -1,10 +1,9 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.domain;
 
 import android.opengl.GLSurfaceView;
-import android.util.Log;
 
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -15,21 +14,21 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public class CubeRenderer implements GLSurfaceView.Renderer {
 
     private Cube cube;
-    private final Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable;
-    private final Observable<GyroscopeTranslation> gyroscopeTranslationObservable;
-    private GyroscopeCoordinates coords;
-    private GyroscopeTranslation translation;
-    private GyroscopeTranslation nonTranslation;
+    private final Observable<GyroscopeRotation> gyroscopeRotationObservable;
+    private final Observable<AccelerometerTranslation> gyroscopeTranslationObservable;
+    private GyroscopeRotation coords;
+    private AccelerometerTranslation translation;
+    private AccelerometerTranslation nonTranslation;
     private boolean isTranslationActive;
 
-    public CubeRenderer(Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable,
-                        Observable<GyroscopeTranslation> gyroscopeTranslationObservable) {
+    public CubeRenderer(Observable<GyroscopeRotation> gyroscopeRotationObservable,
+                        Observable<AccelerometerTranslation> gyroscopeTranslationObservable) {
 
-        this.gyroscopeCoordinatesObservable = gyroscopeCoordinatesObservable;
+        this.gyroscopeRotationObservable = gyroscopeRotationObservable;
         this.gyroscopeTranslationObservable = gyroscopeTranslationObservable;
-        this.coords = new GyroscopeCoordinates(0, 0, 0, 0);
-        this.translation = new GyroscopeTranslation(0, 0, 0);
-        this.nonTranslation = new GyroscopeTranslation(0, 0, 0);
+        this.coords = new GyroscopeRotation(0, 0, 0, 0);
+        this.translation = new AccelerometerTranslation(0, 0, 0);
+        this.nonTranslation = new AccelerometerTranslation(0, 0, 0);
     }
 
     @Override
@@ -52,13 +51,13 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glPopMatrix();
     }
 
-    private void translate(GL10 gl, GyroscopeTranslation translation) {
+    private void translate(GL10 gl, AccelerometerTranslation translation) {
         float depth = 3;
 
         gl.glTranslatef(translation.getX() - this.nonTranslation.getX(), translation.getY() - this.nonTranslation.getY(), -depth);
     }
 
-    private void rotate(GL10 gl, GyroscopeCoordinates coords) {
+    private void rotate(GL10 gl, GyroscopeRotation coords) {
         gl.glRotatef((float) (2.0f * Math.acos(coords.getW()) * 180.0f / Math.PI), coords.getX(), coords.getY(), coords.getZ());
     }
 
@@ -78,9 +77,9 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glDisable(GL10.GL_DITHER);
         gl.glClearColor(1f, 1f, 1f, 1f);
 
-        gyroscopeCoordinatesObservable
+        gyroscopeRotationObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(gyroscopeCoordinates -> {
+                .doOnNext(gyroscopeRotation -> {
                 })
                 .subscribe(coords -> {
                     this.isTranslationActive = false;
@@ -94,7 +93,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
                 })
                 .subscribe(translation -> {
                     this.isTranslationActive = true;
-                    this.nonTranslation = new GyroscopeTranslation(this.translation.getX(), this.translation.getY(), this.translation.getZ());
+                    this.nonTranslation = new AccelerometerTranslation(this.translation.getX(), this.translation.getY(), this.translation.getZ());
                     this.translation.sum(translation);
                 });
     }

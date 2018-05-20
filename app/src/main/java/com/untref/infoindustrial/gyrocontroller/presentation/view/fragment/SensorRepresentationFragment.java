@@ -11,53 +11,53 @@ import android.view.ViewGroup;
 
 import com.untref.infoindustrial.gyrocontroller.core.provider.ActionProvider;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
-import com.untref.infoindustrial.gyrocontroller.presentation.presenter.GyroscopeRepresentationPresenter;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
+import com.untref.infoindustrial.gyrocontroller.presentation.presenter.SensorRepresentationPresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.CubeRenderer;
 
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 
-public class GyroscopeRepresentationFragment extends Fragment implements GyroscopeRepresentationPresenter.View {
+public class SensorRepresentationFragment extends Fragment implements SensorRepresentationPresenter.View {
 
     private GLSurfaceView glSurfaceView;
-    private Observable<GyroscopeCoordinates> gyroscopeCoordinatesObservable;
-    private Observable<GyroscopeTranslation> gyroscopeTranslationObservable;
-    private GyroscopeRepresentationPresenter gyroscopeRepresentationPresenter;
+    private Observable<GyroscopeRotation> gyroscopeRotationObservable;
+    private Observable<AccelerometerTranslation> accelerometerTranslationObservable;
+    private SensorRepresentationPresenter sensorRepresentationPresenter;
 
-    public GyroscopeRepresentationFragment() {
+    public SensorRepresentationFragment() {
         setHasOptionsMenu(true);
-        gyroscopeCoordinatesObservable = Provider.provideGyroscopeCoordinatesPublishSubject();
-        gyroscopeTranslationObservable = Provider.provideGyroscopeTranslationPublishSubject();
+        gyroscopeRotationObservable = Provider.provideGyroscopeRotationPublishSubject();
+        accelerometerTranslationObservable = Provider.provideAccelerometerTranslationPublishSubject();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gyroscopeRepresentationPresenter = new GyroscopeRepresentationPresenter(
-                ActionProvider.getListenGyroscopeCoordinatesFromBluetoothAction(),
-                ActionProvider.getListenGyroscopeTranslationFromBluetoothAction());
-        gyroscopeRepresentationPresenter.setView(this);
+        sensorRepresentationPresenter = new SensorRepresentationPresenter(
+                ActionProvider.getListenGyroscopeRotationFromBluetoothAction(),
+                ActionProvider.getListenAccelerometerTranslationFromBluetoothAction());
+        sensorRepresentationPresenter.setView(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         glSurfaceView.onResume();
-        this.gyroscopeRepresentationPresenter.onResume();
+        this.sensorRepresentationPresenter.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         glSurfaceView.onPause();
-        this.gyroscopeRepresentationPresenter.onPause();
+        this.sensorRepresentationPresenter.onPause();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        CubeRenderer renderer = new CubeRenderer(gyroscopeCoordinatesObservable, gyroscopeTranslationObservable);
+        CubeRenderer renderer = new CubeRenderer(gyroscopeRotationObservable, accelerometerTranslationObservable);
         glSurfaceView = new GLSurfaceView(getActivity());
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glSurfaceView.setRenderer(renderer);

@@ -18,9 +18,8 @@ import android.widget.TextView;
 import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.interactor.DevicesInteractor;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
-import com.untref.infoindustrial.gyrocontroller.core.repository.DevicesRepository;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.DevicesPresenter;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.ConcreteGyroscopeActivity;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.ConcreteSensorActivity;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.adapter.DevicesAdapter;
 
 import java.util.ArrayList;
@@ -133,7 +132,7 @@ public class DevicesFragment extends Fragment implements DevicesPresenter.View {
 
     @Override
     public void renderConcreteGyroscopeActivity() {
-        Intent intent = new Intent(getActivity(), ConcreteGyroscopeActivity.class);
+        Intent intent = new Intent(getActivity(), ConcreteSensorActivity.class);
         startActivity(intent);
     }
 

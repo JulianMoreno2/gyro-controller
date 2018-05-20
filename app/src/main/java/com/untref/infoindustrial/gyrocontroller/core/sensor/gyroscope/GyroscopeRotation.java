@@ -1,13 +1,13 @@
-package com.untref.infoindustrial.gyrocontroller.core.sensor;
+package com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope;
 
-public class GyroscopeCoordinates {
+public class GyroscopeRotation {
 
     private final float x;
     private final float y;
     private final float z;
     private final float w;
 
-    public GyroscopeCoordinates(float x, float y, float z, float w) {
+    public GyroscopeRotation(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -32,6 +32,6 @@ public class GyroscopeCoordinates {
 
     @Override
     public String toString() {
-        return "GyroscopeCoordinates{ x=" + x + ", y=" + y + ", z=" + z + ", w=" + w + " }";
+        return "GyroscopeRotation{ x=" + x + ", y=" + y + ", z=" + z + ", w=" + w + " }";
     }
 }

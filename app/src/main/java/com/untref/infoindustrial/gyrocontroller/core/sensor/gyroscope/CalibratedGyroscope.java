@@ -1,4 +1,4 @@
-package com.untref.infoindustrial.gyrocontroller.core.sensor;
+package com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -32,7 +32,7 @@ public class CalibratedGyroscope implements SensorEventListener {
      * multiplying it with another quaternion
      */
     private final Quaternion deltaQuaternion = new Quaternion();
-    private final PublishSubject<GyroscopeCoordinates> coordinatesPublishSubject;
+    private final PublishSubject<GyroscopeRotation> rotationPublishSubject;
 
     /**
      * The time-stamp being used to record the time when the last gyroscope event occurred.
@@ -57,9 +57,6 @@ public class CalibratedGyroscope implements SensorEventListener {
      */
     private double gyroscopeRotationVelocity = 0;
 
-    /**
-     * Temporary variable to save allocations.
-     */
     private Quaternion correctedQuaternion = new Quaternion();
 
     private final Object synchronizationToken = new Object();
@@ -67,16 +64,11 @@ public class CalibratedGyroscope implements SensorEventListener {
     private final Quaternion currentOrientationQuaternion;
     private SensorManager sensorManager;
 
-    /**
-     * Initialises a new CalibratedGyroscopeProvider
-     *
-     * @param sensorManager The android sensor manager
-     */
-    public CalibratedGyroscope(SensorManager sensorManager, PublishSubject<GyroscopeCoordinates> coordinatesPublishSubject) {
+    public CalibratedGyroscope(SensorManager sensorManager, PublishSubject<GyroscopeRotation> rotationPublishSubject) {
         this.sensorManager = sensorManager;
         this.currentOrientationRotationMatrix = new MatrixF4x4();
         this.currentOrientationQuaternion = new Quaternion();
-        this.coordinatesPublishSubject = coordinatesPublishSubject;
+        this.rotationPublishSubject = rotationPublishSubject;
     }
 
     public void start() {
@@ -88,8 +80,6 @@ public class CalibratedGyroscope implements SensorEventListener {
                 this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                 SensorManager.SENSOR_DELAY_NORMAL);
-
-        System.out.println("REGISTRADO TARADO EH PUTO");
     }
 
     public void stop() {
@@ -147,14 +137,14 @@ public class CalibratedGyroscope implements SensorEventListener {
 
                 synchronized (synchronizationToken) {
                     // Set the rotation matrix as well to have both representations
-                    SensorManager.getRotationMatrixFromVector(currentOrientationRotationMatrix.matrix,
+                    SensorManager.getRotationMatrixFromVector(currentOrientationRotationMatrix.getMatrix(),
                             correctedQuaternion.array());
 
                     float x = correctedQuaternion.getX();
                     float y = correctedQuaternion.getY();
                     float z = correctedQuaternion.getZ();
                     float w = correctedQuaternion.getW();
-                    coordinatesPublishSubject.onNext(new GyroscopeCoordinates(x, y, z, w));
+                    rotationPublishSubject.onNext(new GyroscopeRotation(x, y, z, w));
                 }
             }
             timestamp = event.timestamp;

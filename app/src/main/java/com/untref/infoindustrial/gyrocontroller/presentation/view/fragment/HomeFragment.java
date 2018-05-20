@@ -2,7 +2,6 @@ package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,14 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.HomePresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.DevicesActivity;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.GyroscopeRepresentationActivity;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.HomeActivity;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.SensorRepresentationActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,7 +74,7 @@ public class HomeFragment extends Fragment implements HomePresenter.View {
 
     @Override
     public void renderGyroscopeRepresentationActivity() {
-        Intent intent = new Intent(getActivity(), GyroscopeRepresentationActivity.class);
+        Intent intent = new Intent(getActivity(), SensorRepresentationActivity.class);
         startActivity(intent);
     }
 

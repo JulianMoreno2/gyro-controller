@@ -105,7 +105,7 @@ public class BluetoothService {
     }
 
     /**
-     * Start the chat service. Specifically start AcceptThread to begin a
+     * Start the chat service. Specifically startGyroscope AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume()
      */
     public synchronized void start(Action startGyroscopeRepresentationFragment) {

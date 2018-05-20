@@ -14,15 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme.RobotController">
-        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.HomeActivity">
+        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.HomeActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.DevicesActivity" />
-        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.ConcreteGyroscopeActivity" />
-        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.GyroscopeRepresentationActivity" />
+        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.DevicesActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.ConcreteSensorActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.untref.infoindustrial.gyrocontroller.presentation.view.activity.SensorRepresentationActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

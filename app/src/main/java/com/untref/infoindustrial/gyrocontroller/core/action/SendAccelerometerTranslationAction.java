@@ -5,12 +5,12 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.untref.infoindustrial.gyrocontroller.core.infrastructure.BluetoothService;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeTranslation;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.Translation;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.Translation;
 
 import io.reactivex.Single;
 
-public class SendGyroscopeTranslationToBluetoothAction {
+public class SendAccelerometerTranslationAction {
 
     private static final float TRANSLATE = 0.1f;
     private static final float NONE = 0f;
@@ -18,7 +18,7 @@ public class SendGyroscopeTranslationToBluetoothAction {
     private final BluetoothService bluetoothService;
     private final Gson gson;
 
-    public SendGyroscopeTranslationToBluetoothAction(BluetoothService bluetoothService) {
+    public SendAccelerometerTranslationAction(BluetoothService bluetoothService) {
         this.bluetoothService = bluetoothService;
         this.gson = new Gson();
     }
@@ -31,7 +31,7 @@ public class SendGyroscopeTranslationToBluetoothAction {
                 .doOnSuccess(traslationJson -> bluetoothService.write(traslationJson.getBytes()));
     }
 
-    private GyroscopeTranslation toGyroscopeTranslation(Translation translation) {
+    private AccelerometerTranslation toGyroscopeTranslation(Translation translation) {
         switch (translation) {
             case LEFT:
                 return createGyroscopeTranslation(-TRANSLATE, NONE);
@@ -47,11 +47,11 @@ public class SendGyroscopeTranslationToBluetoothAction {
     }
 
     @NonNull
-    private GyroscopeTranslation createGyroscopeTranslation(float x, float y) {
-        return new GyroscopeTranslation(x, y, 0f);
+    private AccelerometerTranslation createGyroscopeTranslation(float x, float y) {
+        return new AccelerometerTranslation(x, y, 0f);
     }
 
     private void log(String message) {
-        Log.d("DEVICE", "Send GyroscopeTranslation " + message + " to BL");
+        Log.d("DEVICE", "Send AccelerometerTranslation " + message + " to BL");
     }
 }

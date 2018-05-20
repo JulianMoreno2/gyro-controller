@@ -4,23 +4,23 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.GyroscopeCoordinates;
+import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-public class ListenGyroscopeCoordinatesFromBluetoothAction {
+public class ListenGyroscopeRotationFromBluetoothAction {
 
     private final Observable<String> bluetoothMessageObservable;
-    private final PublishSubject<GyroscopeCoordinates> gyroscopeCoordinatesPublishSubject;
+    private final PublishSubject<GyroscopeRotation> gyroscopeRotationPublishSubject;
     private final Gson gson;
 
-    public ListenGyroscopeCoordinatesFromBluetoothAction(
+    public ListenGyroscopeRotationFromBluetoothAction(
             Observable<String> bluetoothMessageObservable,
-            PublishSubject<GyroscopeCoordinates> gyroscopeCoordinatesPublishSubject) {
+            PublishSubject<GyroscopeRotation> gyroscopeRotationPublishSubject) {
 
         this.bluetoothMessageObservable = bluetoothMessageObservable;
-        this.gyroscopeCoordinatesPublishSubject = gyroscopeCoordinatesPublishSubject;
+        this.gyroscopeRotationPublishSubject = gyroscopeRotationPublishSubject;
         this.gson = new Gson();
     }
 
@@ -28,15 +28,15 @@ public class ListenGyroscopeCoordinatesFromBluetoothAction {
         this.bluetoothMessageObservable
                 .doOnNext(this::log)
                 .filter(this::isValidJson)
-                .map(message -> this.gson.fromJson(message, GyroscopeCoordinates.class))
-                .doOnNext(gyroscopeCoordinatesPublishSubject::onNext)
+                .map(message -> this.gson.fromJson(message, GyroscopeRotation.class))
+                .doOnNext(gyroscopeRotationPublishSubject::onNext)
                 .subscribe();
     }
 
     private boolean isValidJson(String message) {
         try {
-            GyroscopeCoordinates gyroscopeCoordinates = gson.fromJson(message, GyroscopeCoordinates.class);
-            return gyroscopeCoordinates != null;
+            GyroscopeRotation gyroscopeRotation = gson.fromJson(message, GyroscopeRotation.class);
+            return gyroscopeRotation != null;
         } catch (JsonSyntaxException e) {
             return false;
         }

@@ -8,7 +8,7 @@
     >
 
     <fragment
-        class="com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.GyroscopeRepresentationFragment"
+        class="com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.SensorRepresentationFragment"
         android:id="@+id/navigate_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

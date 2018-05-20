@@ -7,7 +7,8 @@
     <string name="text_pair">Pair</string>
     <string name="text_connect">Connect</string>
     <string name="text_client">Client</string>
-    <string name="text_start">Start</string>
+    <string name="text_start_gyroscope">Start Gyroscope</string>
+    <string name="text_start_accelerometer">Start Accelerometer</string>
     <string name="text_stop">Stop</string>
     <string name="text_disconnect">Disconnect</string>
     <string name="text_left">Left</string>

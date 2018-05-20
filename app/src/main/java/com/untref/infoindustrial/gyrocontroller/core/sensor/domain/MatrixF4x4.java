@@ -14,10 +14,7 @@ public class MatrixF4x4 {
 
     private boolean colMaj = true;
 
-    /**
-     * The matrix.
-     */
-    public float[] matrix;
+    private float[] matrix;
 
     /**
      * Instantiates a new matrixf4x4. The Matrix is assumed to be Column major, however you can change this by using the
@@ -29,11 +26,6 @@ public class MatrixF4x4 {
         Matrix.setIdentityM(this.matrix, 0);
     }
 
-    /**
-     * Gets the matrix.
-     *
-     * @return the matrix, can be null if the matrix is invalid
-     */
     public float[] getMatrix() {
         return this.matrix;
     }
