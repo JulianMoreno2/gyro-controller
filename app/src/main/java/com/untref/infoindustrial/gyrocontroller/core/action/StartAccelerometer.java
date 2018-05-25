@@ -15,4 +15,8 @@ public class StartAccelerometer {
     public Completable execute() {
         return Completable.fromAction(this.accelerometerCompass::start);
     }
+
+    public Completable executeStop() {
+        return Completable.fromAction(this.accelerometerCompass::stop);
+    }
 }

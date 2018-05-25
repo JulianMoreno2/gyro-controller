@@ -71,9 +71,9 @@ public class AccelerometerCompass implements SensorEventListener {
 
         float x = correctedQuaternion.getX();
         float y = correctedQuaternion.getY();
-        float z = correctedQuaternion.getZ();
-        float w = correctedQuaternion.getW();
-        translationPublishSubject.onNext(new AccelerometerTranslation(x, y, z));
+        float z = 0;
+        float w = 0;
+        translationPublishSubject.onNext(new AccelerometerTranslation(x, y,  z));
     }
 
     @Override

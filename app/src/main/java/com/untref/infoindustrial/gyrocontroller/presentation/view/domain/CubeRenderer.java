@@ -1,6 +1,7 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.domain;
 
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
@@ -15,20 +16,21 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
     private Cube cube;
     private final Observable<GyroscopeRotation> gyroscopeRotationObservable;
-    private final Observable<AccelerometerTranslation> gyroscopeTranslationObservable;
+    private final Observable<AccelerometerTranslation> accelerometerTranslationObservable;
     private GyroscopeRotation coords;
     private AccelerometerTranslation translation;
     private AccelerometerTranslation nonTranslation;
-    private boolean isTranslationActive;
+    private boolean isActiveGyroscope;
 
     public CubeRenderer(Observable<GyroscopeRotation> gyroscopeRotationObservable,
-                        Observable<AccelerometerTranslation> gyroscopeTranslationObservable) {
+                        Observable<AccelerometerTranslation> accelerometerTranslationObservable) {
 
         this.gyroscopeRotationObservable = gyroscopeRotationObservable;
-        this.gyroscopeTranslationObservable = gyroscopeTranslationObservable;
+        this.accelerometerTranslationObservable = accelerometerTranslationObservable;
         this.coords = new GyroscopeRotation(0, 0, 0, 0);
         this.translation = new AccelerometerTranslation(0, 0, 0);
         this.nonTranslation = new AccelerometerTranslation(0, 0, 0);
+        this.isActiveGyroscope = false;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        gl.glPushMatrix();
+        //gl.glPushMatrix();
 
         translate(gl, translation);
         rotate(gl, coords);
@@ -48,17 +50,21 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
         this.cube.draw(gl);
 
-        gl.glPopMatrix();
+        //gl.glPopMatrix();
     }
 
     private void translate(GL10 gl, AccelerometerTranslation translation) {
         float depth = 3;
-
-        gl.glTranslatef(translation.getX() - this.nonTranslation.getX(), translation.getY() - this.nonTranslation.getY(), -depth);
+        if (isActiveGyroscope) {
+            gl.glTranslatef(0, 0, -depth);
+        } else {
+            gl.glTranslatef(translation.getX(), translation.getY(), -depth);
+        }
     }
 
     private void rotate(GL10 gl, GyroscopeRotation coords) {
-        gl.glRotatef((float) (2.0f * Math.acos(coords.getW()) * 180.0f / Math.PI), coords.getX(), coords.getY(), coords.getZ());
+        gl.glRotatef((float) (2.0f * Math.acos(coords.getW()) * 180.0f / Math.PI),
+                coords.getX(), coords.getY(), coords.getZ());
     }
 
     @Override
@@ -80,20 +86,18 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gyroscopeRotationObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(gyroscopeRotation -> {
-                })
+                    Log.d("TRANSLATION", "true");
+                    this.isActiveGyroscope = true;})
                 .subscribe(coords -> {
-                    this.isTranslationActive = false;
                     this.coords = coords;
                 });
 
-        gyroscopeTranslationObservable
+        accelerometerTranslationObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(gyroscopeTranslation -> {
-
-                })
+                .doOnNext(accelerometerTranslation -> {
+                    Log.d("TRANSLATION", "false");
+                    this.isActiveGyroscope = false;})
                 .subscribe(translation -> {
-                    this.isTranslationActive = true;
-                    this.nonTranslation = new AccelerometerTranslation(this.translation.getX(), this.translation.getY(), this.translation.getZ());
                     this.translation.sum(translation);
                 });
     }

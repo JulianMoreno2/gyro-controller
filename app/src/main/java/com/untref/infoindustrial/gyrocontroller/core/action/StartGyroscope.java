@@ -12,8 +12,11 @@ public class StartGyroscope {
         this.calibratedGyroscope = calibratedGyroscope;
     }
 
-    public Completable execute() {
+    public Completable executeStart() {
         return Completable.fromAction(this.calibratedGyroscope::start);
     }
 
+    public Completable executeStop() {
+        return Completable.fromAction(this.calibratedGyroscope::stop);
+    }
 }

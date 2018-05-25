@@ -21,10 +21,14 @@ import butterknife.ButterKnife;
 
 public class ConcreteSensorFragment extends Fragment implements ConcreteSensorPresenter.View {
 
-    @BindView(R.id.btn_start)
+    @BindView(R.id.btn_start_gyroscope)
     Button btn_start_gyroscope;
+    @BindView(R.id.btn_stop_gyroscope)
+    Button btn_stop_gyroscope;
     @BindView(R.id.btn_start_accelerometer)
     Button btn_start_accelermeter;
+    @BindView(R.id.btn_stop_accelerometer)
+    Button btn_stop_accelermeter;
     @BindView(R.id.btn_send_coord)
     Button btn_send_coord;
 
@@ -76,7 +80,9 @@ public class ConcreteSensorFragment extends Fragment implements ConcreteSensorPr
         ButterKnife.bind(this, view);
 
         btn_start_gyroscope.setOnClickListener(v -> concreteSensorPresenter.onGyroscopeStart());
+        btn_stop_gyroscope.setOnClickListener(v -> concreteSensorPresenter.onGyroscopeStop());
         btn_start_accelermeter.setOnClickListener(v -> concreteSensorPresenter.onAccelerometerStart());
+        btn_stop_accelermeter.setOnClickListener(v -> concreteSensorPresenter.onAccelerometerStop());
         btn_send_coord.setOnClickListener(v -> concreteSensorPresenter.onSendRandomGyroscopeRotation());
 
         btn_left.setOnClickListener(v -> concreteSensorPresenter.onSendGyroscopeTranslation(Translation.LEFT));
@@ -93,14 +99,24 @@ public class ConcreteSensorFragment extends Fragment implements ConcreteSensorPr
     @Override
     public void startGyroscope() {
         btn_start_gyroscope.setEnabled(false);
+        btn_stop_gyroscope.setEnabled(true);
+    }
+
+    @Override
+    public void stopGyroscope() {
+        btn_start_gyroscope.setEnabled(true);
+        btn_stop_gyroscope.setEnabled(false);
     }
 
     @Override
     public void startAccelerometer() {
         btn_start_accelermeter.setEnabled(false);
+        btn_stop_accelermeter.setEnabled(true);
     }
 
     @Override
-    public void sendRandomGyroscopeRotation(String message) {
+    public void stopAccelerometer() {
+        btn_start_accelermeter.setEnabled(true);
+        btn_stop_accelermeter.setEnabled(false);
     }
 }

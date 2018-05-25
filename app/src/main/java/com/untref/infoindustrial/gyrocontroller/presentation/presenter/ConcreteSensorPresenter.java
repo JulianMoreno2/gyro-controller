@@ -8,6 +8,8 @@ import com.untref.infoindustrial.gyrocontroller.core.action.StartAccelerometer;
 import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.Translation;
 
+import io.reactivex.disposables.Disposable;
+
 public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.View> {
 
     private final StartGyroscope startGyroscope;
@@ -16,6 +18,8 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
     private final SendRandomGyroscopeRotationAction sendRandomGyroscopeRotation;
     private final SendAccelerometerTranslationAction sendAccelerometerTranslationAction;
     private final SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrives;
+    private Disposable accelerometerDisposable;
+    private Disposable gyroscopeDisposable;
 
     public ConcreteSensorPresenter(StartGyroscope startGyroscope,
                                    StartAccelerometer startAccelerometer,
@@ -33,24 +37,41 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
     }
 
     public void onGyroscopeStart() {
-
         getView().startGyroscope();
 
-        sendGyroscopeRotationToBluetoothWhenArrives.execute().subscribe();
-        startGyroscope.execute().subscribe();
+        gyroscopeDisposable = sendGyroscopeRotationToBluetoothWhenArrives.execute().subscribe();
+        startGyroscope.executeStart().subscribe();
+    }
+
+    public void onGyroscopeStop() {
+        getView().stopGyroscope();
+
+        if(!gyroscopeDisposable.isDisposed()) {
+            gyroscopeDisposable.dispose();
+        }
+
+        startGyroscope.executeStop();
     }
 
     public void onAccelerometerStart() {
-
         getView().startAccelerometer();
 
-        sendAccelerometerTranslationToBluetoothWhenArrives.execute().subscribe();
+        accelerometerDisposable = sendAccelerometerTranslationToBluetoothWhenArrives.execute().subscribe();
         startAccelerometer.execute().subscribe();
+    }
+
+    public void onAccelerometerStop() {
+        getView().stopAccelerometer();
+
+        if(!accelerometerDisposable.isDisposed()) {
+            accelerometerDisposable.dispose();
+        }
+
+        startAccelerometer.executeStop().subscribe();
     }
 
     public void onSendRandomGyroscopeRotation() {
         sendRandomGyroscopeRotation.execute()
-                .doOnSuccess(message -> getView().sendRandomGyroscopeRotation(message))
                 .subscribe();
     }
 
@@ -63,8 +84,11 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
 
         void startGyroscope();
 
+        void stopGyroscope();
+
         void startAccelerometer();
 
-        void sendRandomGyroscopeRotation(String message);
+        void stopAccelerometer();
+
     }
 }
