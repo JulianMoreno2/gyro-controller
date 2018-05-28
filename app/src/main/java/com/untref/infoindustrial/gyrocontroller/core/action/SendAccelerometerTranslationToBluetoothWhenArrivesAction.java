@@ -33,6 +33,6 @@ public class SendAccelerometerTranslationToBluetoothWhenArrivesAction {
     }
 
     private void log(String message) {
-        Log.d("DEVICE", "Rotation BL To: " + message);
+        Log.d("DEVICE", "Translation BL To: " + message);
     }
 }

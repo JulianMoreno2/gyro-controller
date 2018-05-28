@@ -2,36 +2,36 @@ package com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope;
 
 public class GyroscopeRotation {
 
-    private final float x;
-    private final float y;
-    private final float z;
-    private final float w;
+    private final float xGyro;
+    private final float yGyro;
+    private final float zGyro;
+    private final float wGyro;
 
-    public GyroscopeRotation(float x, float y, float z, float w) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
+    public GyroscopeRotation(float xGyro, float yGyro, float zGyro, float wGyro) {
+        this.xGyro = xGyro;
+        this.yGyro = yGyro;
+        this.zGyro = zGyro;
+        this.wGyro = wGyro;
     }
 
-    public float getX() {
-        return x;
+    public float getXGyro() {
+        return xGyro;
     }
 
-    public float getY() {
-        return y;
+    public float getYGyro() {
+        return yGyro;
     }
 
-    public float getZ() {
-        return z;
+    public float getZGyro() {
+        return zGyro;
     }
 
-    public float getW() {
-        return w;
+    public float getWGyro() {
+        return wGyro;
     }
 
     @Override
     public String toString() {
-        return "GyroscopeRotation{ x=" + x + ", y=" + y + ", z=" + z + ", w=" + w + " }";
+        return "GyroscopeRotation{ xGyro=" + xGyro + ", yGyro=" + yGyro + ", zGyro=" + zGyro + ", wGyro=" + wGyro + " }";
     }
 }

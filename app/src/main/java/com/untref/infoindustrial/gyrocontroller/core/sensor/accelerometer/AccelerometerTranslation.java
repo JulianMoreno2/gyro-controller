@@ -2,30 +2,30 @@ package com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer;
 
 public class AccelerometerTranslation {
 
-    private float x;
-    private float y;
-    private float z;
+    private float xAccel;
+    private float yAccel;
+    private float zAccel;
 
-    public AccelerometerTranslation(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public AccelerometerTranslation(float xAccel, float yAccel, float zAccel) {
+        this.xAccel = xAccel;
+        this.yAccel = yAccel;
+        this.zAccel = zAccel;
     }
 
-    public float getX() {
-        return x;
+    public float getXAccel() {
+        return xAccel;
     }
 
-    public float getY() {
-        return y;
+    public float getYAccel() {
+        return yAccel;
     }
 
-    public float getZ() {
-        return z;
+    public float getZAccel() {
+        return zAccel;
     }
 
     public void sum(AccelerometerTranslation translation) {
-        this.x += translation.getX();
-        this.y += translation.getY();
+        this.xAccel += translation.getXAccel();
+        this.yAccel += translation.getYAccel();
     }
 }

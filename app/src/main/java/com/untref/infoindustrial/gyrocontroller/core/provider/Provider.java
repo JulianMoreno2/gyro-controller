@@ -10,7 +10,7 @@ public class Provider {
 
     private static PublishSubject<String> bluetoothReaderPublishSubject;
     private static PublishSubject<GyroscopeRotation> gyroscopeRotationPublishSubject;
-    private static PublishSubject<AccelerometerTranslation> gyroscopeTranslationPublishSubject;
+    private static PublishSubject<AccelerometerTranslation> accelerometerTranslationPublishSubject;
     private static BluetoothService bluetoothService;
 
     public static PublishSubject<String> provideBluetoothReaderPublishSubject() {
@@ -35,9 +35,9 @@ public class Provider {
     }
 
     public static PublishSubject<AccelerometerTranslation> provideAccelerometerTranslationPublishSubject() {
-        if (gyroscopeTranslationPublishSubject == null) {
-            gyroscopeTranslationPublishSubject = PublishSubject.create();
+        if (accelerometerTranslationPublishSubject == null) {
+            accelerometerTranslationPublishSubject = PublishSubject.create();
         }
-        return gyroscopeTranslationPublishSubject;
+        return accelerometerTranslationPublishSubject;
     }
 }

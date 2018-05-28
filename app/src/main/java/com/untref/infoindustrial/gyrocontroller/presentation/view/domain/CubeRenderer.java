@@ -1,5 +1,6 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.domain;
 
+import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -19,7 +20,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
     private final Observable<AccelerometerTranslation> accelerometerTranslationObservable;
     private GyroscopeRotation coords;
     private AccelerometerTranslation translation;
-    private AccelerometerTranslation nonTranslation;
     private boolean isActiveGyroscope;
 
     public CubeRenderer(Observable<GyroscopeRotation> gyroscopeRotationObservable,
@@ -29,7 +29,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         this.accelerometerTranslationObservable = accelerometerTranslationObservable;
         this.coords = new GyroscopeRotation(0, 0, 0, 0);
         this.translation = new AccelerometerTranslation(0, 0, 0);
-        this.nonTranslation = new AccelerometerTranslation(0, 0, 0);
         this.isActiveGyroscope = false;
     }
 
@@ -40,8 +39,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        //gl.glPushMatrix();
-
         translate(gl, translation);
         rotate(gl, coords);
 
@@ -49,8 +46,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
         this.cube.draw(gl);
-
-        //gl.glPopMatrix();
     }
 
     private void translate(GL10 gl, AccelerometerTranslation translation) {
@@ -58,13 +53,13 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         if (isActiveGyroscope) {
             gl.glTranslatef(0, 0, -depth);
         } else {
-            gl.glTranslatef(translation.getX(), translation.getY(), -depth);
+            gl.glTranslatef(translation.getXAccel(), translation.getYAccel(), -depth);
         }
     }
 
     private void rotate(GL10 gl, GyroscopeRotation coords) {
-        gl.glRotatef((float) (2.0f * Math.acos(coords.getW()) * 180.0f / Math.PI),
-                coords.getX(), coords.getY(), coords.getZ());
+        gl.glRotatef((float) (2.0f * Math.acos(coords.getWGyro()) * 180.0f / Math.PI),
+                coords.getXGyro(), coords.getYGyro(), coords.getZGyro());
     }
 
     @Override
@@ -85,19 +80,15 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
         gyroscopeRotationObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(gyroscopeRotation -> {
-                    Log.d("TRANSLATION", "true");
-                    this.isActiveGyroscope = true;})
                 .subscribe(coords -> {
+                    this.isActiveGyroscope = true;
                     this.coords = coords;
                 });
 
         accelerometerTranslationObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(accelerometerTranslation -> {
-                    Log.d("TRANSLATION", "false");
-                    this.isActiveGyroscope = false;})
                 .subscribe(translation -> {
+                    this.isActiveGyroscope = false;
                     this.translation.sum(translation);
                 });
     }
