@@ -5,19 +5,11 @@ public class AccelerometerTranslation {
     private float xAccel;
     private float yAccel;
     private float zAccel;
-    private float maxHeight;
-    private float minHeight;
-    private float maxWidth;
-    private float minWidth;
 
     public AccelerometerTranslation(float xAccel, float yAccel, float zAccel) {
         this.xAccel = xAccel;
         this.yAccel = yAccel;
         this.zAccel = zAccel;
-        this.maxHeight = 2.0f;
-        this.minHeight = -2.0f;
-        this.maxWidth = 2.0f;
-        this.minWidth = -2.0f;
     }
 
     public float getXAccel() {
@@ -40,7 +32,7 @@ public class AccelerometerTranslation {
         return zAccel;
     }
 
-    public void sum(AccelerometerTranslation translation) {
+    public void sum(AccelerometerTranslation translation, float maxHeight, float minHeight, float maxWidth, float minWidth) {
         if(Math.abs(this.getXAccel()) < maxWidth) {
             this.xAccel += translation.getXAccel() / 5;
         }

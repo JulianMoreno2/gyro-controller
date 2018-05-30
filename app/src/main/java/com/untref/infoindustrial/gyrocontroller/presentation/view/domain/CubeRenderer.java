@@ -22,15 +22,24 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
     private GyroscopeRotation coords;
     private AccelerometerTranslation translation;
     private boolean isActiveGyroscope;
+    private float maxHeight;
+    private float minHeight;
+    private float maxWidth;
+    private float minWidth;
 
     public CubeRenderer(Observable<GyroscopeRotation> gyroscopeRotationObservable,
-                        Observable<AccelerometerTranslation> accelerometerTranslationObservable) {
+                        Observable<AccelerometerTranslation> accelerometerTranslationObservable,
+                        float maxHeight, float minHeight, float maxWidth, float minWidth) {
 
         this.gyroscopeRotationObservable = gyroscopeRotationObservable;
         this.accelerometerTranslationObservable = accelerometerTranslationObservable;
         this.coords = new GyroscopeRotation(0, 0, 0, 0);
         this.translation = new AccelerometerTranslation(0, 0, 0);
         this.isActiveGyroscope = false;
+        this.maxHeight = maxHeight;
+        this.minHeight = minHeight;
+        this.maxWidth = maxWidth;
+        this.minWidth = minWidth;
     }
 
     @Override
@@ -92,7 +101,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(translation -> {
                     this.isActiveGyroscope = false;
-                    this.translation.sum(translation);
+                    this.translation.sum(translation, this.maxHeight, this.minHeight, this.maxWidth, this.minWidth);
                 });
     }
 }
