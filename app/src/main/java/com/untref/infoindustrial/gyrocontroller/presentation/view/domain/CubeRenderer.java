@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
+
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
 
@@ -52,6 +53,8 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         float depth = 3;
         if (isActiveGyroscope) {
             gl.glTranslatef(0, 0, -depth);
+            translation.restartXAccel();
+            translation.restartYAccel();
         } else {
             gl.glTranslatef(translation.getXAccel(), translation.getYAccel(), -depth);
         }

@@ -5,11 +5,19 @@ public class AccelerometerTranslation {
     private float xAccel;
     private float yAccel;
     private float zAccel;
+    private float maxHeight;
+    private float minHeight;
+    private float maxWidth;
+    private float minWidth;
 
     public AccelerometerTranslation(float xAccel, float yAccel, float zAccel) {
         this.xAccel = xAccel;
         this.yAccel = yAccel;
         this.zAccel = zAccel;
+        this.maxHeight = 2.0f;
+        this.minHeight = -2.0f;
+        this.maxWidth = 2.0f;
+        this.minWidth = -2.0f;
     }
 
     public float getXAccel() {
@@ -20,12 +28,37 @@ public class AccelerometerTranslation {
         return yAccel;
     }
 
+    public void restartXAccel() {
+        this.xAccel = 0;
+    }
+
+    public void restartYAccel() {
+        this.yAccel = 0;
+    }
+
     public float getZAccel() {
         return zAccel;
     }
 
     public void sum(AccelerometerTranslation translation) {
-        this.xAccel += translation.getXAccel();
-        this.yAccel += translation.getYAccel();
+        if(Math.abs(this.getXAccel()) < maxWidth) {
+            this.xAccel += translation.getXAccel() / 5;
+        }
+        if(this.getXAccel() <= minWidth && translation.getXAccel() >= 0) {
+            this.xAccel += translation.getXAccel() / 5;
+        }
+        if(this.getXAccel() >= maxWidth && translation.getXAccel() <= 0) {
+            this.xAccel += translation.getXAccel() / 5;
+        }
+
+        if(Math.abs(this.getYAccel()) < maxHeight) {
+            this.yAccel += translation.getYAccel() / 5;
+        }
+        if(this.getYAccel() <= minHeight && translation.getYAccel() >= 0) {
+            this.yAccel += translation.getYAccel() / 5;
+        }
+        if(this.getYAccel() >= maxHeight && translation.getYAccel() <= 0) {
+            this.yAccel += translation.getYAccel() / 5;
+        }
     }
 }
