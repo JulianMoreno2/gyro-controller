@@ -63,7 +63,7 @@ public class AccelerometerCompass implements SensorEventListener {
             System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
         }
 
-        // Fuse accelerometer with compass
+       /* // Fuse accelerometer with compass
         SensorManager.getRotationMatrix(rotationMatrix.getMatrix(), inclinationValues,
                 accelerometerValues, magnitudeValues);
         // Transform rotation matrix to quaternion
@@ -71,8 +71,11 @@ public class AccelerometerCompass implements SensorEventListener {
 
         float x = correctedQuaternion.getX();
         float y = correctedQuaternion.getY();
-        float z = 0;
-        float w = 0;
+        float z = accelerometerValues[2];
+        float w = 0;*/
+        float x = accelerometerValues[0];
+        float y = accelerometerValues[1];
+        float z = accelerometerValues[2];
         translationPublishSubject.onNext(new AccelerometerTranslation(x, y,  z));
     }
 

@@ -1,5 +1,7 @@
 package com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer;
 
+import android.util.Log;
+
 public class AccelerometerTranslation {
 
     private float xAccel;
@@ -33,6 +35,12 @@ public class AccelerometerTranslation {
     }
 
     public void sum(AccelerometerTranslation translation, float maxHeight, float minHeight, float maxWidth, float minWidth) {
+        Log.d("ACELERACION EN X: " , String.valueOf(getXAccel()));
+        Log.d("ACELERACION EN Y: " , String.valueOf(getYAccel()));
+        Log.d("ACELERACION EN Z: " , String.valueOf(getZAccel()));
+
+        //if(Math.abs(aceleracionAnterior - aceleracionActual) > EPSILON)
+
         if(Math.abs(this.getXAccel()) < maxWidth) {
             this.xAccel += translation.getXAccel() / 5;
         }
@@ -43,6 +51,8 @@ public class AccelerometerTranslation {
             this.xAccel += translation.getXAccel() / 5;
         }
 
+        //if(Math.abs(aceleracionAnterior - aceleracionActual) > EPSILON)
+
         if(Math.abs(this.getYAccel()) < maxHeight) {
             this.yAccel += translation.getYAccel() / 5;
         }
@@ -52,5 +62,11 @@ public class AccelerometerTranslation {
         if(this.getYAccel() >= maxHeight && translation.getYAccel() <= 0) {
             this.yAccel += translation.getYAccel() / 5;
         }
+
+        //ALPHA = 0.02
+        //aceleracionZ = aceleracion - gravedad (9.82 aprox, con error +-0.1
+        //if (Math.abs(aceleracionZAnterior - aceleracionZActual) > ALPHA)
+        this.zAccel += translation.getZAccel();
+
     }
 }
