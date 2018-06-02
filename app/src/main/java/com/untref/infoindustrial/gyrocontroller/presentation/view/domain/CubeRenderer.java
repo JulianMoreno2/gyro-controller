@@ -1,9 +1,6 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.domain;
 
-import android.annotation.SuppressLint;
 import android.opengl.GLSurfaceView;
-import android.util.Log;
-
 
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
@@ -21,6 +18,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
     private final Observable<AccelerometerTranslation> accelerometerTranslationObservable;
     private GyroscopeRotation coords;
     private AccelerometerTranslation translation;
+    private AccelerometerTranslation previousAccelerometerTranslation;
     private boolean isActiveGyroscope;
     private float maxHeight;
     private float minHeight;
@@ -35,6 +33,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         this.accelerometerTranslationObservable = accelerometerTranslationObservable;
         this.coords = new GyroscopeRotation(0, 0, 0, 0);
         this.translation = new AccelerometerTranslation(0, 0, 0);
+        this.previousAccelerometerTranslation = new AccelerometerTranslation(0, 0, -3);
         this.isActiveGyroscope = false;
         this.maxHeight = maxHeight;
         this.minHeight = minHeight;
@@ -65,7 +64,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
             translation.restartXAccel();
             translation.restartYAccel();
         } else {
-            gl.glTranslatef(translation.getXAccel(), translation.getYAccel(), -depth);
+            gl.glTranslatef(translation.getXAccel(), translation.getYAccel(), translation.getZAccel());
         }
     }
 
@@ -101,7 +100,8 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(translation -> {
                     this.isActiveGyroscope = false;
-                    this.translation.sum(translation, this.maxHeight, this.minHeight, this.maxWidth, this.minWidth);
+                    this.translation.sum(translation, this.previousAccelerometerTranslation, this.maxHeight, this.minHeight, this.maxWidth, this.minWidth);
+                    this.previousAccelerometerTranslation = translation;
                 });
     }
 }
