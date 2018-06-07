@@ -4,8 +4,8 @@ import android.util.Log;
 
 public class AccelerometerTranslation {
 
-    private static final float EPSILON = 0.01f;
-    private static final float ALPHA = 0.2f;
+    private static final float EPSILON = 0.3f;
+    private static final float ALPHA = 2.5f;
     private static final float MAX_DEPTH = -3f;
     private static final float MIN_DEPTH = -4f;
     private static final float GRAVITY = 9.82f;
@@ -34,6 +34,10 @@ public class AccelerometerTranslation {
 
     public void restartYAccel() {
         this.yAccel = 0;
+    }
+
+    public void restartZAccel() {
+        this.zAccel = 0;
     }
 
     public float getZAccel() {
@@ -70,14 +74,14 @@ public class AccelerometerTranslation {
 
         //Log.d("DEVICE", "ACELERACION EN Y: " + String.valueOf(getYAccel()));
 
-        float actualZAccel = translation.getZAccel() - GRAVITY;
+        float actualZAccel = -translation.getZAccel();// - GRAVITY;
 
-        if (Math.abs(previousTranslation.getZAccel() - GRAVITY - actualZAccel) > ALPHA) {
+        if (Math.abs(previousTranslation.getZAccel() - actualZAccel) > ALPHA) {
             Log.d("DEVICE", "Total: " + String.valueOf(getZAccel()));
             Log.d("DEVICE", "Previa: " + String.valueOf(previousTranslation.getZAccel()));
             Log.d("DEVICE", "Actual: " + String.valueOf(actualZAccel));
             if (this.getZAccel() < MAX_DEPTH && this.getZAccel() > MIN_DEPTH) {
-                this.zAccel += actualZAccel;
+                this.zAccel += actualZAccel / 5;
             }
             if (this.getZAccel() <= MIN_DEPTH && actualZAccel >= 0) {
                 this.zAccel += actualZAccel / 5;
