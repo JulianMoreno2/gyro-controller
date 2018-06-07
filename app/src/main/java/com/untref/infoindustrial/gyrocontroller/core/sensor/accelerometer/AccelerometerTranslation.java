@@ -1,14 +1,12 @@
 package com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer;
 
-import android.util.Log;
 
 public class AccelerometerTranslation {
 
     private static final float EPSILON = 0.3f;
     private static final float ALPHA = 2.5f;
-    private static final float MAX_DEPTH = -3f;
-    private static final float MIN_DEPTH = -4f;
-    private static final float GRAVITY = 9.82f;
+    private static final float MAX_DEPTH = -2f;
+    private static final float MIN_DEPTH = -6f;
 
     private float xAccel;
     private float yAccel;
@@ -58,8 +56,6 @@ public class AccelerometerTranslation {
             }
         }
 
-        //Log.d("DEVICE", "ACELERACION EN X: " + String.valueOf(getXAccel()));
-
         if (Math.abs(previousTranslation.getYAccel() - translation.getYAccel()) > EPSILON) {
             if (Math.abs(this.getYAccel()) < maxHeight) {
                 this.yAccel += translation.getYAccel() / 5;
@@ -72,14 +68,10 @@ public class AccelerometerTranslation {
             }
         }
 
-        //Log.d("DEVICE", "ACELERACION EN Y: " + String.valueOf(getYAccel()));
 
-        float actualZAccel = -translation.getZAccel();// - GRAVITY;
+        float actualZAccel = -translation.getZAccel();;
 
         if (Math.abs(previousTranslation.getZAccel() - actualZAccel) > ALPHA) {
-            Log.d("DEVICE", "Total: " + String.valueOf(getZAccel()));
-            Log.d("DEVICE", "Previa: " + String.valueOf(previousTranslation.getZAccel()));
-            Log.d("DEVICE", "Actual: " + String.valueOf(actualZAccel));
             if (this.getZAccel() < MAX_DEPTH && this.getZAccel() > MIN_DEPTH) {
                 this.zAccel += actualZAccel / 5;
             }
@@ -97,6 +89,5 @@ public class AccelerometerTranslation {
             }
         }
 
-        //Log.d("DEVICE", "ACELERACION EN Z: " + String.valueOf(getZAccel()));
     }
 }
