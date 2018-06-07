@@ -69,28 +69,12 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         int height = display.getHeight();  // deprecated
         Log.d("ALTO: ", String.valueOf(height));
         if (height == 0) height = 1;            // To prevent divide by 0
-        /*float aspect = (float) width / (float) height;
-        float minWidth;
-        float maxWidth;
-        float minHeight;
-        float maxHeight;
-        if (width >= height) {
-            minWidth   = -1.0f * aspect;
-            maxWidth  = 1.0f * aspect;
-            minHeight = -1.0f;
-            maxHeight    = 1.0f;
-        } else {
-            minWidth   = -1.0f;
-            maxWidth  = 1.0f;
-            minHeight = -1.0f / aspect;
-            maxHeight    = 1.0f / aspect;
-        }*/
-        //glViewport(0, 0, width, height);
+
         float minWidth = ((float)-width)/1000.0f;
         float maxWidth = ((float)width)/1000.0f;
         float minHeight = ((float)-height)/1000.0f;
         float maxHeight = ((float)height)/1000.0f;
-        //
+
         CubeRenderer renderer = new CubeRenderer(gyroscopeRotationObservable, accelerometerTranslationObservable, maxHeight, minHeight, maxWidth, minWidth);
         glSurfaceView = new GLSurfaceView(getActivity());
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
