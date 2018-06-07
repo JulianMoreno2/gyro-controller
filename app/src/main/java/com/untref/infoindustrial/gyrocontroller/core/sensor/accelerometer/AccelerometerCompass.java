@@ -12,6 +12,7 @@ public class AccelerometerCompass implements SensorEventListener {
     final private float[] gravityValues = new float[3];
     final private float[] accelerometerValues = new float[3];
     final private float[] linearAccelerationValues = new float[3];
+    final float alpha = 0.8f; //para la gravedad
 
     private SensorManager sensorManager;
     private PublishSubject<AccelerometerTranslation> translationPublishSubject;
@@ -49,6 +50,15 @@ public class AccelerometerCompass implements SensorEventListener {
         else if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
         }
+
+        // In this example, alpha is calculated as t / (t + dT),
+        // where t is the low-pass filter's time-constant and
+        // dT is the event delivery rate.
+
+        // Isolate the force of gravity with the low-pass filter.
+        gravityValues[0] = alpha * gravityValues[0] + (1 - alpha) * accelerometerValues[0];
+        gravityValues[1] = alpha * gravityValues[1] + (1 - alpha) * accelerometerValues[1];
+        gravityValues[2] = alpha * gravityValues[2] + (1 - alpha) * accelerometerValues[2];
 
         // Remove the gravity contribution with the high-pass filter.
         linearAccelerationValues[0] = accelerometerValues[0] - gravityValues[0];
