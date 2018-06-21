@@ -14,6 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public class CubeRenderer implements GLSurfaceView.Renderer {
 
     private Cube cube;
+    private Obstacle obstacle;
     private final Observable<GyroscopeRotation> gyroscopeRotationObservable;
     private final Observable<AccelerometerTranslation> accelerometerTranslationObservable;
     private GyroscopeRotation coords;
@@ -55,6 +56,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
         this.cube.draw(gl);
+        this.obstacle.draw(gl, translation.getZAccel());
     }
 
     private void translate(GL10 gl, AccelerometerTranslation translation) {
@@ -85,9 +87,12 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        this.cube = new Cube();
+        this.cube = new Cube(0.5f);
+        this.obstacle = new Obstacle(0.2f, this.maxWidth, this.minWidth, this.maxHeight, this.minHeight);
+
         gl.glDisable(GL10.GL_DITHER);
         gl.glClearColor(1f, 1f, 1f, 1f);
+        this.obstacle.draw(gl,-3);
 
         gyroscopeRotationObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -104,4 +109,5 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
                     this.previousAccelerometerTranslation = translation;
                 });
     }
+
 }

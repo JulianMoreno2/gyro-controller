@@ -8,23 +8,21 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class Cube {
 
-    private static final float V_SIZE = 0.5f;
-
     private FloatBuffer mVertexBuffer;
     private FloatBuffer mColorBuffer;
     private ByteBuffer mIndexBuffer;
 
-    public Cube() {
+    public Cube(float size) {
 
         final float vertices[] = {
-                -V_SIZE, -V_SIZE, -V_SIZE,//0
-                V_SIZE, -V_SIZE, -V_SIZE, //1
-                V_SIZE, V_SIZE, -V_SIZE,  //2
-                -V_SIZE, V_SIZE, -V_SIZE, //3
-                -V_SIZE, -V_SIZE, V_SIZE, //4
-                V_SIZE, -V_SIZE, V_SIZE,  //5
-                V_SIZE, V_SIZE, V_SIZE,   //6
-                -V_SIZE, V_SIZE, V_SIZE,  //7
+                -size, -size, -size,//0
+                size, -size, -size, //1
+                size, size, -size,  //2
+                -size, size, -size, //3
+                -size, -size, size, //4
+                size, -size, size,  //5
+                size, size, size,   //6
+                -size, size, size,  //7
         };
 
         final float colors[] = {
