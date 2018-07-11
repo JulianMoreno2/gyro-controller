@@ -10,36 +10,33 @@ import javax.microedition.khronos.opengles.GL10;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 
 public class CubeRenderer implements GLSurfaceView.Renderer {
 
-    private Cube cube;
-    private Obstacle obstacle;
+    private static final int DEFAULT_DEPTH = -3;
     private final Observable<GyroscopeRotation> gyroscopeRotationObservable;
     private final Observable<AccelerometerTranslation> accelerometerTranslationObservable;
+    private final Bounds bounds;
+
+    private Cube cube;
     private GyroscopeRotation coords;
     private AccelerometerTranslation translation;
     private AccelerometerTranslation previousAccelerometerTranslation;
     private boolean isActiveGyroscope;
-    private float maxHeight;
-    private float minHeight;
-    private float maxWidth;
-    private float minWidth;
 
     public CubeRenderer(Observable<GyroscopeRotation> gyroscopeRotationObservable,
                         Observable<AccelerometerTranslation> accelerometerTranslationObservable,
-                        float maxHeight, float minHeight, float maxWidth, float minWidth) {
+                        Bounds bounds, Action vibrate) {
 
         this.gyroscopeRotationObservable = gyroscopeRotationObservable;
         this.accelerometerTranslationObservable = accelerometerTranslationObservable;
-        this.coords = new GyroscopeRotation(0, 0, 0, 0);
-        this.translation = new AccelerometerTranslation(0, 0, 0);
-        this.previousAccelerometerTranslation = new AccelerometerTranslation(0, 0, -3);
+        this.bounds = bounds;
+        this.coords = new GyroscopeRotation(0, 0, DEFAULT_DEPTH, 0);
+        this.translation = new AccelerometerTranslation(0, 1, DEFAULT_DEPTH);
+        this.previousAccelerometerTranslation = new AccelerometerTranslation(0, 0, DEFAULT_DEPTH);
+        this.translation.setVibrateAction(vibrate);
         this.isActiveGyroscope = false;
-        this.maxHeight = maxHeight;
-        this.minHeight = minHeight;
-        this.maxWidth = maxWidth;
-        this.minWidth = minWidth;
     }
 
     @Override
@@ -56,7 +53,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 
         this.cube.draw(gl);
-        this.obstacle.draw(gl, translation.getZAccel());
     }
 
     private void translate(GL10 gl, AccelerometerTranslation translation) {
@@ -88,11 +84,9 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         this.cube = new Cube(0.5f);
-        this.obstacle = new Obstacle(0.2f, this.maxWidth, this.minWidth, this.maxHeight, this.minHeight);
 
         gl.glDisable(GL10.GL_DITHER);
         gl.glClearColor(1f, 1f, 1f, 1f);
-        this.obstacle.draw(gl,-3);
 
         gyroscopeRotationObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -105,7 +99,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(translation -> {
                     this.isActiveGyroscope = false;
-                    this.translation.sum(translation, this.previousAccelerometerTranslation, this.maxHeight, this.minHeight, this.maxWidth, this.minWidth);
+                    this.translation.sum(translation, this.previousAccelerometerTranslation, this.bounds);
                     this.previousAccelerometerTranslation = translation;
                 });
     }

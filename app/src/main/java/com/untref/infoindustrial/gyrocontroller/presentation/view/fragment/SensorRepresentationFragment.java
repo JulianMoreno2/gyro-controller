@@ -3,6 +3,7 @@ package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,10 +18,12 @@ import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.SensorRepresentationPresenter;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.Bounds;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.CubeRenderer;
 
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+import io.reactivex.functions.Action;
 
 
 public class SensorRepresentationFragment extends Fragment implements SensorRepresentationPresenter.View {
@@ -64,23 +67,29 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         //calculo maximo de pantalla
         WindowManager wm = (WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
-        int width = display.getWidth();  // deprecated
-        Log.d("ANCHO: ", String.valueOf(width));
-        int height = display.getHeight();  // deprecated
-        Log.d("ALTO: ", String.valueOf(height));
-        if (height == 0) height = 1;            // To prevent divide by 0
+        int width = display.getWidth(); // deprecated
+        Log.d(": ", "WIDTH: " + String.valueOf(width));
+        int height = display.getHeight(); // deprecated
+        Log.d("HEIGHT: ", String.valueOf(height));
+        if (height == 0) height = 1; // To prevent divide by 0
 
-        float minWidth = ((float)-width)/1000.0f;
-        float maxWidth = ((float)width)/1000.0f;
-        float minHeight = ((float)-height)/1000.0f;
-        float maxHeight = ((float)height)/1000.0f;
+        float minWidth = -width / 1000.0f;
+        float maxWidth = width / 1000.0f;
+        float minHeight = -height / 1000.0f;
+        float maxHeight = height / 1000.0f;
 
-        CubeRenderer renderer = new CubeRenderer(gyroscopeRotationObservable, accelerometerTranslationObservable, maxHeight, minHeight, maxWidth, minWidth);
+        Bounds bounds = new Bounds(maxHeight, minHeight, maxWidth, minWidth);
+        CubeRenderer renderer = new CubeRenderer(gyroscopeRotationObservable, accelerometerTranslationObservable, bounds, createVibrator());
         glSurfaceView = new GLSurfaceView(getActivity());
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glSurfaceView.setRenderer(renderer);
 
         return glSurfaceView;
+    }
+
+    private Action createVibrator() {
+        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        return () -> v.vibrate(400);
     }
 
     @Override
