@@ -12,6 +12,7 @@ import com.untref.infoindustrial.gyrocontroller.core.action.StartAccelerometer;
 import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerCompass;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.CalibratedGyroscope;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.HasCollisionBetweenObjects;
 
 public class ActionProvider {
 
@@ -23,6 +24,7 @@ public class ActionProvider {
     private static ListenAccelerometerTranslationFromBluetoothAction listenAccelerometerTranslationFromBluetoothAction;
     private static SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrivesAction;
     private static StartAccelerometer startAccelerometer;
+    private static HasCollisionBetweenObjects hasCollisionBetweenObjects;
 
     public static StartGyroscope getStartGyroscopeAction(SensorManager sensorManager) {
         if (startGyroscope == null) {
@@ -94,5 +96,12 @@ public class ActionProvider {
                     Provider.provideAccelerometerTranslationPublishSubject()));
         }
         return startAccelerometer;
+    }
+
+    public static HasCollisionBetweenObjects getHasCollisionBetweenObjects() {
+        if (hasCollisionBetweenObjects == null) {
+            hasCollisionBetweenObjects = new HasCollisionBetweenObjects();
+        }
+        return hasCollisionBetweenObjects;
     }
 }

@@ -1,11 +1,7 @@
 package com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer;
 
 
-import android.util.Log;
-
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.Bounds;
-
-import io.reactivex.functions.Action;
 
 public class AccelerometerTranslation {
 
@@ -17,16 +13,11 @@ public class AccelerometerTranslation {
     private float xAccel;
     private float yAccel;
     private float zAccel;
-    private Action vibrate;
 
     public AccelerometerTranslation(float xAccel, float yAccel, float zAccel) {
         this.xAccel = xAccel;
         this.yAccel = yAccel;
         this.zAccel = zAccel;
-    }
-
-    public void setVibrateAction(Action vibrate) {
-        this.vibrate = vibrate;
     }
 
     public float getXAccel() {
@@ -54,31 +45,9 @@ public class AccelerometerTranslation {
     }
 
     public void sum(AccelerometerTranslation translation, AccelerometerTranslation previousTranslation, Bounds bounds) {
-        if (!hasIntersect(translation)) {
-            moveX(translation, previousTranslation, bounds);
-            moveY(translation, previousTranslation, bounds);
-            moveZ(translation, previousTranslation);
-        } else {
-            try {
-                if (vibrate != null) vibrate.run();
-            } catch (Exception e) {
-                Log.e("DEVICE", "Cannot vibrate");
-            }
-        }
-    }
-
-    private boolean hasIntersect(AccelerometerTranslation translation) {
-
-        float x = 0f;
-        float y = 5f;
-        float size = 0.5f;
-
-        boolean bool = ((this.xAccel + (translation.getXAccel() / 5) >= x - size) && (x + size >= this.xAccel - (x / 5))) ||
-                ((this.yAccel + (translation.getYAccel() / 5) >= y - size) && (y + size >= this.yAccel - (y / 5)));
-
-        Log.d("DEVICE", "Has Intersect: " + bool);
-
-        return bool;
+        moveX(translation, previousTranslation, bounds);
+        moveY(translation, previousTranslation, bounds);
+        moveZ(translation, previousTranslation);
     }
 
     private void moveX(AccelerometerTranslation translation, AccelerometerTranslation previousTranslation, Bounds bounds) {

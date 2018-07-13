@@ -35,7 +35,6 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
         this.coords = new GyroscopeRotation(0, 0, DEFAULT_DEPTH, 0);
         this.translation = new AccelerometerTranslation(0, 1, DEFAULT_DEPTH);
         this.previousAccelerometerTranslation = new AccelerometerTranslation(0, 0, DEFAULT_DEPTH);
-        this.translation.setVibrateAction(vibrate);
         this.isActiveGyroscope = false;
     }
 

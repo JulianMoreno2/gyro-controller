@@ -1,9 +1,9 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,15 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
+import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.provider.ActionProvider;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.GyroscopeRotation;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.SensorRepresentationPresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.Bounds;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.CubeRenderer;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.functions.Action;
@@ -28,15 +29,16 @@ import io.reactivex.functions.Action;
 
 public class SensorRepresentationFragment extends Fragment implements SensorRepresentationPresenter.View {
 
-    private GLSurfaceView glSurfaceView;
-    private Observable<GyroscopeRotation> gyroscopeRotationObservable;
-    private Observable<AccelerometerTranslation> accelerometerTranslationObservable;
+    @BindView(R.id.object)
+    ImageView object;
+
+    @BindView(R.id.obstacle)
+    ImageView obstacle;
+
     private SensorRepresentationPresenter sensorRepresentationPresenter;
 
     public SensorRepresentationFragment() {
         setHasOptionsMenu(true);
-        gyroscopeRotationObservable = Provider.provideGyroscopeRotationPublishSubject();
-        accelerometerTranslationObservable = Provider.provideAccelerometerTranslationPublishSubject();
     }
 
     @Override
@@ -44,27 +46,61 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         super.onCreate(savedInstanceState);
         sensorRepresentationPresenter = new SensorRepresentationPresenter(
                 ActionProvider.getListenGyroscopeRotationFromBluetoothAction(),
-                ActionProvider.getListenAccelerometerTranslationFromBluetoothAction());
+                ActionProvider.getListenAccelerometerTranslationFromBluetoothAction(),
+                ActionProvider.getHasCollisionBetweenObjects(),
+                createVibrator(),
+                Provider.provideAccelerometerTranslationPublishSubject(),
+                getBounds());
         sensorRepresentationPresenter.setView(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        glSurfaceView.onResume();
         this.sensorRepresentationPresenter.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        glSurfaceView.onPause();
         this.sensorRepresentationPresenter.onPause();
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //calculo maximo de pantalla
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_sensor_representation, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+    }
+
+    @Override
+    public Context context() {
+        return getContext();
+    }
+
+    @Override
+    public void moveObject(float x, float y) {
+        object.setX(x);
+        object.setY(y);
+    }
+
+    @Override
+    public View getObject() {
+        return object;
+    }
+
+    @Override
+    public View getObstacle() {
+        return obstacle;
+    }
+
+    private Bounds getBounds() {
         WindowManager wm = (WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         int width = display.getWidth(); // deprecated
@@ -78,28 +114,13 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         float minHeight = -height / 1000.0f;
         float maxHeight = height / 1000.0f;
 
-        Bounds bounds = new Bounds(maxHeight, minHeight, maxWidth, minWidth);
-        CubeRenderer renderer = new CubeRenderer(gyroscopeRotationObservable, accelerometerTranslationObservable, bounds, createVibrator());
-        glSurfaceView = new GLSurfaceView(getActivity());
-        glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        glSurfaceView.setRenderer(renderer);
-
-        return glSurfaceView;
+        return new Bounds(maxHeight, minHeight, maxWidth, minWidth);
     }
 
     private Action createVibrator() {
         Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        return () -> v.vibrate(400);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
-    }
-
-    @Override
-    public Context context() {
-        return getContext();
+        return () -> {
+            v.vibrate(400);
+        };
     }
 }

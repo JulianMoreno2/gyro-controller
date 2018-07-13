@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <fragment
         class="com.untref.infoindustrial.gyrocontroller.presentation.view.fragment.SensorRepresentationFragment"
         android:id="@+id/navigate_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/fragment_navigate"
+        tools:layout="@layout/fragment_sensor_representation"
         />
 
 </LinearLayout>
