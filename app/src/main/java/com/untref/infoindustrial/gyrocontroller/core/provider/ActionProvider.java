@@ -4,15 +4,17 @@ import android.hardware.SensorManager;
 
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeRotationFromBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenAccelerometerTranslationFromBluetoothAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.ListenVibrateMessageAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationToBluetoothWhenArrivesAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeRotationToBluetoothWhenArrivesAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendRandomGyroscopeRotationAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendVibrateMessageAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.StartAccelerometer;
 import com.untref.infoindustrial.gyrocontroller.core.action.StartGyroscope;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerCompass;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.gyroscope.CalibratedGyroscope;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.HasCollisionBetweenObjects;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.HasCollisionBetweenObjectsAction;
 
 public class ActionProvider {
 
@@ -24,7 +26,9 @@ public class ActionProvider {
     private static ListenAccelerometerTranslationFromBluetoothAction listenAccelerometerTranslationFromBluetoothAction;
     private static SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrivesAction;
     private static StartAccelerometer startAccelerometer;
-    private static HasCollisionBetweenObjects hasCollisionBetweenObjects;
+    private static HasCollisionBetweenObjectsAction hasCollisionBetweenObjectsAction;
+    private static SendVibrateMessageAction sendVibrateMessageAction;
+    private static ListenVibrateMessageAction listenVibrateMessageAction;
 
     public static StartGyroscope getStartGyroscopeAction(SensorManager sensorManager) {
         if (startGyroscope == null) {
@@ -98,10 +102,26 @@ public class ActionProvider {
         return startAccelerometer;
     }
 
-    public static HasCollisionBetweenObjects getHasCollisionBetweenObjects() {
-        if (hasCollisionBetweenObjects == null) {
-            hasCollisionBetweenObjects = new HasCollisionBetweenObjects();
+    public static HasCollisionBetweenObjectsAction getHasCollisionBetweenObjectsAction() {
+        if (hasCollisionBetweenObjectsAction == null) {
+            hasCollisionBetweenObjectsAction = new HasCollisionBetweenObjectsAction();
         }
-        return hasCollisionBetweenObjects;
+        return hasCollisionBetweenObjectsAction;
+    }
+
+    public static SendVibrateMessageAction getSendVibrateMessageAction() {
+        if (sendVibrateMessageAction == null) {
+            sendVibrateMessageAction = new SendVibrateMessageAction(
+                    Provider.provideBluetoothService());
+        }
+        return sendVibrateMessageAction;
+    }
+
+    public static ListenVibrateMessageAction getListenVibrateMessageFromBluetooth() {
+        if (listenVibrateMessageAction == null) {
+            listenVibrateMessageAction = new ListenVibrateMessageAction(
+                    Provider.provideBluetoothReaderPublishSubject());
+        }
+        return listenVibrateMessageAction;
     }
 }

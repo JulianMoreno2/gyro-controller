@@ -3,6 +3,7 @@ package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment;
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -57,7 +58,8 @@ public class ConcreteSensorFragment extends Fragment implements ConcreteSensorPr
                 ActionProvider.getSendGyroscopeRotationToBluetoothWhenArrivesAction(),
                 ActionProvider.getSendRandomGyroscopeRotation(),
                 ActionProvider.getSendAccelerometerTranslationAction(),
-                ActionProvider.getSendAccelerometerTranslationToBluetoothWhenArrivesAction());
+                ActionProvider.getSendAccelerometerTranslationToBluetoothWhenArrivesAction(),
+                ActionProvider.getListenVibrateMessageFromBluetooth());
 
         concreteSensorPresenter.setView(this);
     }
@@ -89,6 +91,8 @@ public class ConcreteSensorFragment extends Fragment implements ConcreteSensorPr
         btn_right.setOnClickListener(v -> concreteSensorPresenter.onSendGyroscopeTranslation(Translation.RIGHT));
         btn_up.setOnClickListener(v -> concreteSensorPresenter.onSendGyroscopeTranslation(Translation.UP));
         btn_down.setOnClickListener(v -> concreteSensorPresenter.onSendGyroscopeTranslation(Translation.DOWN));
+
+        concreteSensorPresenter.onReceiveVibrateMessage();
     }
 
     @Override
@@ -118,5 +122,11 @@ public class ConcreteSensorFragment extends Fragment implements ConcreteSensorPr
     public void stopAccelerometer() {
         btn_start_accelermeter.setEnabled(true);
         btn_stop_accelermeter.setEnabled(false);
+    }
+
+    @Override
+    public void vibrate() {
+        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(400);
     }
 }

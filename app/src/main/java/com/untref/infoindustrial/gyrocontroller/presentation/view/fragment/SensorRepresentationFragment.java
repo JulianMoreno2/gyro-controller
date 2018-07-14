@@ -2,8 +2,6 @@ package com.untref.infoindustrial.gyrocontroller.presentation.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,14 +15,11 @@ import android.widget.ImageView;
 import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.provider.ActionProvider;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
-import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.SensorRepresentationPresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.Bounds;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.functions.Action;
 
 
 public class SensorRepresentationFragment extends Fragment implements SensorRepresentationPresenter.View {
@@ -50,8 +45,8 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         sensorRepresentationPresenter = new SensorRepresentationPresenter(
                 ActionProvider.getListenGyroscopeRotationFromBluetoothAction(),
                 ActionProvider.getListenAccelerometerTranslationFromBluetoothAction(),
-                ActionProvider.getHasCollisionBetweenObjects(),
-                createVibrator(),
+                ActionProvider.getHasCollisionBetweenObjectsAction(),
+                ActionProvider.getSendVibrateMessageAction(),
                 Provider.provideAccelerometerTranslationPublishSubject(),
                 getBounds());
         sensorRepresentationPresenter.setView(this);
@@ -123,12 +118,5 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         float maxHeight = height / 1000.0f;
 
         return new Bounds(maxHeight, minHeight, maxWidth, minWidth);
-    }
-
-    private Action createVibrator() {
-        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        return () -> {
-            v.vibrate(400);
-        };
     }
 }

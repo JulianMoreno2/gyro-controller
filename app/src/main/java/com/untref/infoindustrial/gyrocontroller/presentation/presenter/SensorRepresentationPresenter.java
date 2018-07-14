@@ -2,9 +2,10 @@ package com.untref.infoindustrial.gyrocontroller.presentation.presenter;
 
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenAccelerometerTranslationFromBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeRotationFromBluetoothAction;
+import com.untref.infoindustrial.gyrocontroller.core.action.SendVibrateMessageAction;
 import com.untref.infoindustrial.gyrocontroller.core.sensor.accelerometer.AccelerometerTranslation;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.Bounds;
-import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.HasCollisionBetweenObjects;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.HasCollisionBetweenObjectsAction;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -14,12 +15,14 @@ import io.reactivex.functions.Action;
 public class SensorRepresentationPresenter extends Presenter<SensorRepresentationPresenter.View> {
 
     private static final float DEFAULT_DEPTH = 3f;
+
     private final ListenGyroscopeRotationFromBluetoothAction listenGyroscopeRotationFromBluetoothAction;
     private final ListenAccelerometerTranslationFromBluetoothAction listenAccelerometerTranslationFromBluetoothAction;
-    private final HasCollisionBetweenObjects hasCollisionBetweenObjects;
-    private final Action vibrator;
+    private final HasCollisionBetweenObjectsAction hasCollisionBetweenObjectsAction;
+    private final SendVibrateMessageAction sendVibrateMessageAction;
     private final Observable<AccelerometerTranslation> accelerometerTranslationObservable;
     private final Bounds bounds;
+
     private final AccelerometerTranslation translation;
     private AccelerometerTranslation previousAccelerometerTranslation;
     private Disposable compositeDisposable;
@@ -27,14 +30,15 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
     public SensorRepresentationPresenter(
             ListenGyroscopeRotationFromBluetoothAction listenGyroscopeRotationFromBluetoothAction,
             ListenAccelerometerTranslationFromBluetoothAction listenAccelerometerTranslationFromBluetoothAction,
-            HasCollisionBetweenObjects hasCollisionBetweenObjects, Action vibrator,
+            HasCollisionBetweenObjectsAction hasCollisionBetweenObjectsAction,
+            SendVibrateMessageAction sendVibrateMessageAction,
             Observable<AccelerometerTranslation> accelerometerTranslationObservable,
             Bounds bounds) {
 
         this.listenGyroscopeRotationFromBluetoothAction = listenGyroscopeRotationFromBluetoothAction;
         this.listenAccelerometerTranslationFromBluetoothAction = listenAccelerometerTranslationFromBluetoothAction;
-        this.hasCollisionBetweenObjects = hasCollisionBetweenObjects;
-        this.vibrator = vibrator;
+        this.hasCollisionBetweenObjectsAction = hasCollisionBetweenObjectsAction;
+        this.sendVibrateMessageAction = sendVibrateMessageAction;
         this.accelerometerTranslationObservable = accelerometerTranslationObservable;
         this.bounds = bounds;
 
@@ -52,9 +56,9 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
                     this.translation.sum(translation, this.previousAccelerometerTranslation, this.bounds);
                     this.previousAccelerometerTranslation = translation;
                     getView().moveObject(this.translation.getXAccel(), this.translation.getYAccel());
-                    if (hasCollisionBetweenObjects.execute(getView().getObject(), getView().getObstacle(), getView().getObstacle2())) {
+                    if (hasCollisionBetweenObjectsAction.execute(getView().getObject(), getView().getObstacle(), getView().getObstacle2())) {
                         this.translation.reverse(translation, this.previousAccelerometerTranslation, this.bounds);
-                        this.vibrator.run();
+                        this.sendVibrateMessageAction.execute();
                     }
                 });
     }

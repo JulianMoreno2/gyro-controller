@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.View;
 
-public class HasCollisionBetweenObjects {
+public class HasCollisionBetweenObjectsAction {
 
     public boolean execute(View object, View obstacle, View obstacle2) {
         int x1 = Math.round(object.getX());

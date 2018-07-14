@@ -1,5 +1,6 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.presenter;
 
+import com.untref.infoindustrial.gyrocontroller.core.action.ListenVibrateMessageAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationToBluetoothWhenArrivesAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeRotationToBluetoothWhenArrivesAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationAction;
@@ -18,6 +19,7 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
     private final SendRandomGyroscopeRotationAction sendRandomGyroscopeRotation;
     private final SendAccelerometerTranslationAction sendAccelerometerTranslationAction;
     private final SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrives;
+    private final ListenVibrateMessageAction listenVibrateMessageAction;
     private Disposable accelerometerDisposable;
     private Disposable gyroscopeDisposable;
 
@@ -26,7 +28,8 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
                                    SendGyroscopeRotationToBluetoothWhenArrivesAction sendGyroscopeRotationToBluetoothWhenArrives,
                                    SendRandomGyroscopeRotationAction sendRandomGyroscopeRotation,
                                    SendAccelerometerTranslationAction sendAccelerometerTranslationAction,
-                                   SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrives) {
+                                   SendAccelerometerTranslationToBluetoothWhenArrivesAction sendAccelerometerTranslationToBluetoothWhenArrives,
+                                   ListenVibrateMessageAction listenVibrateMessageAction) {
 
         this.startGyroscope = startGyroscope;
         this.startAccelerometer = startAccelerometer;
@@ -34,6 +37,7 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
         this.sendRandomGyroscopeRotation = sendRandomGyroscopeRotation;
         this.sendAccelerometerTranslationAction = sendAccelerometerTranslationAction;
         this.sendAccelerometerTranslationToBluetoothWhenArrives = sendAccelerometerTranslationToBluetoothWhenArrives;
+        this.listenVibrateMessageAction = listenVibrateMessageAction;
     }
 
     public void onGyroscopeStart() {
@@ -46,7 +50,7 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
     public void onGyroscopeStop() {
         getView().stopGyroscope();
 
-        if(!gyroscopeDisposable.isDisposed()) {
+        if (!gyroscopeDisposable.isDisposed()) {
             gyroscopeDisposable.dispose();
         }
 
@@ -63,7 +67,7 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
     public void onAccelerometerStop() {
         getView().stopAccelerometer();
 
-        if(!accelerometerDisposable.isDisposed()) {
+        if (!accelerometerDisposable.isDisposed()) {
             accelerometerDisposable.dispose();
         }
 
@@ -80,6 +84,12 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
                 .subscribe();
     }
 
+    public void onReceiveVibrateMessage() {
+        listenVibrateMessageAction.execute()
+                .subscribe(() -> getView().vibrate());
+    }
+
+
     public interface View extends Presenter.View {
 
         void startGyroscope();
@@ -90,5 +100,6 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
 
         void stopAccelerometer();
 
+        void vibrate();
     }
 }
