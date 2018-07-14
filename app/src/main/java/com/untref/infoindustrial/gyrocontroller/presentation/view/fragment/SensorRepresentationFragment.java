@@ -35,6 +35,9 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
     @BindView(R.id.obstacle)
     ImageView obstacle;
 
+    @BindView(R.id.obstacle2)
+    ImageView obstacle2;
+
     private SensorRepresentationPresenter sensorRepresentationPresenter;
 
     public SensorRepresentationFragment() {
@@ -98,6 +101,11 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
     @Override
     public View getObstacle() {
         return obstacle;
+    }
+
+    @Override
+    public View getObstacle2() {
+        return obstacle2;
     }
 
     private Bounds getBounds() {

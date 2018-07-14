@@ -21,5 +21,6 @@
     <string name="text_server">Server</string>
     <string name="text_send_coord">Send Random Coord</string>
     <string name="obstacle">obstacle</string>
+    <string name="obstacle2">obstacle</string>
     <string name="object">object</string>
 </resources>

@@ -15,6 +15,16 @@
         android:src="@android:drawable/button_onoff_indicator_on" />
 
     <ImageView
+        android:id="@+id/obstacle2"
+        android:layout_width="40dp"
+        android:layout_height="180dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="306dp"
+        android:contentDescription="@string/obstacle2"
+        android:src="@android:drawable/button_onoff_indicator_on" />
+
+    <ImageView
         android:id="@+id/object"
         android:layout_width="81dp"
         android:layout_height="72dp"

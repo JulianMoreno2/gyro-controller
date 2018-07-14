@@ -8,14 +8,17 @@ import android.view.View;
 
 public class HasCollisionBetweenObjects {
 
-    public boolean execute(View object, View obstacle) {
+    public boolean execute(View object, View obstacle, View obstacle2) {
         int x1 = Math.round(object.getX());
         int y1 = Math.round(object.getY());
         int x2 = Math.round(obstacle.getX());
         int y2 = Math.round(obstacle.getY());
+        int x3 = Math.round(obstacle2.getX());
+        int y3 = Math.round(obstacle2.getY());
 
         Bitmap bitmap1 = getViewBitmap(object);
         Bitmap bitmap2 = getViewBitmap(obstacle);
+        Bitmap bitmap3 = getViewBitmap(obstacle2);
 
         if (bitmap1 == null || bitmap2 == null) {
             throw new IllegalArgumentException("bitmaps cannot be null");
@@ -23,6 +26,7 @@ public class HasCollisionBetweenObjects {
 
         Rect bounds1 = new Rect(x1, y1, x1 + bitmap1.getWidth(), y1 + bitmap1.getHeight());
         Rect bounds2 = new Rect(x2, y2, x2 + bitmap2.getWidth(), y2 + bitmap2.getHeight());
+        Rect bounds3 = new Rect(x3, y3, x3 + bitmap3.getWidth(), y3 + bitmap3.getHeight());
 
         if (Rect.intersects(bounds1, bounds2)) {
             Rect collisionBounds = getCollisionBounds(bounds1, bounds2);
@@ -40,10 +44,30 @@ public class HasCollisionBetweenObjects {
                 }
             }
         }
+
+        if (Rect.intersects(bounds1, bounds3)) {
+            Rect collisionBounds = getCollisionBounds(bounds1, bounds3);
+            for (int i = collisionBounds.left; i < collisionBounds.right; i++) {
+                for (int j = collisionBounds.top; j < collisionBounds.bottom; j++) {
+                    int bitmap1Pixel = bitmap1.getPixel(i - x1, j - y1);
+                    int bitmap3Pixel = bitmap3.getPixel(i - x3, j - y3);
+                    if (isFilled(bitmap1Pixel) && isFilled(bitmap3Pixel)) {
+                        bitmap1.recycle();
+                        bitmap1 = null;
+                        bitmap3.recycle();
+                        bitmap3 = null;
+                        return true;
+                    }
+                }
+            }
+        }
+
         bitmap1.recycle();
         bitmap1 = null;
         bitmap2.recycle();
         bitmap2 = null;
+        bitmap3.recycle();
+        bitmap3 = null;
         return false;
     }
 

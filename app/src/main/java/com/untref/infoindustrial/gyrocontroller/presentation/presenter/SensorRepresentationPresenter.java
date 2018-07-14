@@ -52,7 +52,7 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
                     this.translation.sum(translation, this.previousAccelerometerTranslation, this.bounds);
                     this.previousAccelerometerTranslation = translation;
                     getView().moveObject(this.translation.getXAccel(), this.translation.getYAccel());
-                    if (hasCollisionBetweenObjects.execute(getView().getObject(), getView().getObstacle())) {
+                    if (hasCollisionBetweenObjects.execute(getView().getObject(), getView().getObstacle(), getView().getObstacle2())) {
                         this.translation.reverse(translation, this.previousAccelerometerTranslation, this.bounds);
                         this.vibrator.run();
                     }
@@ -69,5 +69,7 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
         android.view.View getObject();
 
         android.view.View getObstacle();
+
+        android.view.View getObstacle2();
     }
 }
