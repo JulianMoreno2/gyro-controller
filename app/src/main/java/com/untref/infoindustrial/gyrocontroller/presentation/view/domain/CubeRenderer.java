@@ -98,7 +98,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(translation -> {
                     this.isActiveGyroscope = false;
-                    this.translation.sum(translation, this.previousAccelerometerTranslation, this.bounds);
+                    this.translation.oldSum(translation, this.previousAccelerometerTranslation, this.bounds);
                     this.previousAccelerometerTranslation = translation;
                 });
     }

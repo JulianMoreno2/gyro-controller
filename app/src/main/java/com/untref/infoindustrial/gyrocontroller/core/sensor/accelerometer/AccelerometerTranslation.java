@@ -111,18 +111,8 @@ public class AccelerometerTranslation {
         moveZ(translation, previousTranslation);
     }
 
-
     private void moveX(AccelerometerTranslation translation, AccelerometerTranslation previousTranslation, Bounds bounds) {
         if (Math.abs(previousTranslation.getXAccel() - translation.getXAccel()) > EPSILON) {
-            /*if (Math.abs(this.getXAccel()) < bounds.getMaxWidth()) {
-                this.xAccel += translation.getXAccel() * 50;
-            }
-            if (this.getXAccel() <= bounds.getMinWidth() && translation.getXAccel() >= 0) {
-                this.xAccel += translation.getXAccel() * 50;
-            }
-            if (this.getXAccel() >= bounds.getMaxWidth() && translation.getXAccel() <= 0) {
-                this.xAccel += translation.getXAccel() * 50;
-            }*/
             if (this.getXAccel() < bounds.getMaxWidth() && this.getXAccel() > bounds.getMinWidth()) {
                 if(this.getXAccel() - translation.getXAccel() < bounds.getMinWidth()){
                     this.xAccel = bounds.getMinWidth();
@@ -190,5 +180,55 @@ public class AccelerometerTranslation {
         }
         Log.d(": ", "Z: " + this.zAccel);
     }
+
+    public void oldSum(AccelerometerTranslation translation, AccelerometerTranslation previousTranslation, Bounds bounds) {
+
+        if (Math.abs(previousTranslation.getXAccel() - translation.getXAccel()) > EPSILON) {
+            if (Math.abs(this.getXAccel()) < bounds.getMaxWidth()) {
+                this.xAccel += translation.getXAccel() / 5;
+            }
+            if (this.getXAccel() <= bounds.getMinWidth() && translation.getXAccel() >= 0) {
+                this.xAccel += translation.getXAccel() / 5;
+            }
+            if (this.getXAccel() >= bounds.getMaxWidth() && translation.getXAccel() <= 0) {
+                this.xAccel += translation.getXAccel() / 5;
+            }
+        }
+
+        if (Math.abs(previousTranslation.getYAccel() - translation.getYAccel()) > EPSILON) {
+            if (Math.abs(this.getYAccel()) < bounds.getMaxHeight()) {
+                this.yAccel += translation.getYAccel() / 5;
+            }
+            if (this.getYAccel() <= bounds.getMinHeight() && translation.getYAccel() >= 0) {
+                this.yAccel += translation.getYAccel() / 5;
+            }
+            if (this.getYAccel() >= bounds.getMaxHeight() && translation.getYAccel() <= 0) {
+                this.yAccel += translation.getYAccel() / 5;
+            }
+        }
+
+
+        float actualZAccel = -translation.getZAccel();;
+
+        if (Math.abs(previousTranslation.getZAccel() - actualZAccel) > ALPHA) {
+            if (this.getZAccel() < MAX_DEPTH && this.getZAccel() > MIN_DEPTH) {
+                this.zAccel += actualZAccel / 5;
+            }
+            if (this.getZAccel() <= MIN_DEPTH && actualZAccel >= 0) {
+                this.zAccel += actualZAccel / 5;
+            }
+            if (this.getZAccel() >= MAX_DEPTH && actualZAccel <= 0) {
+                this.zAccel += actualZAccel / 5;
+            }
+            if(this.zAccel >= MAX_DEPTH) {
+                this.zAccel = MAX_DEPTH;
+            }
+            if (this.zAccel <= MIN_DEPTH) {
+                this.zAccel = MIN_DEPTH;
+            }
+        }
+
+    }
 }
+
 
