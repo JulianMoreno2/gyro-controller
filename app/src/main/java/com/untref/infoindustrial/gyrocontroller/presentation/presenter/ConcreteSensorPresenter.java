@@ -1,5 +1,7 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.presenter;
 
+import android.util.Log;
+
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenVibrateMessageAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendAccelerometerTranslationToBluetoothWhenArrivesAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendGyroscopeRotationToBluetoothWhenArrivesAction;
@@ -86,7 +88,7 @@ public class ConcreteSensorPresenter extends Presenter<ConcreteSensorPresenter.V
 
     public void onReceiveVibrateMessage() {
         listenVibrateMessageAction.execute()
-                .subscribe(() -> getView().vibrate());
+                .subscribe(message -> getView().vibrate());
     }
 
 

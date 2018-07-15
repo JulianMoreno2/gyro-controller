@@ -33,15 +33,15 @@ public class ListenVibrateMessageAction {
         gson = gsonBuilder.create();
     }
 
-    public Completable execute() {
+    public Observable<String> execute() {
         return bluetoothMessageObservable
-                .filter(this::isValidJson)
-                .doOnNext(this::log)
-                .map(message -> this.gson.fromJson(message, VibrateMessage.class))
-                .flatMapCompletable(vibrateMessage -> Completable.complete());
+                .filter(this::isVibrateMessage)
+                .doOnNext(this::log);
+                //.map(message -> this.gson.fromJson(message, VibrateMessage.class))
+                //.flatMapCompletable(vibrateMessage -> Completable.complete());
     }
 
-    private boolean isValidJson(String message) {
+    private boolean isVibrateMessage(String message) {
         try {
             VibrateMessage vibrateMessage = gson.fromJson(message, VibrateMessage.class);
             return vibrateMessage != null;

@@ -58,7 +58,7 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
                     getView().moveObject(this.translation.getXAccel(), this.translation.getYAccel());
                     if (hasCollisionBetweenObjectsAction.execute(getView().getObject(), getView().getObstacle(), getView().getObstacle2())) {
                         this.translation.reverse(translation, this.previousAccelerometerTranslation, this.bounds);
-                        this.sendVibrateMessageAction.execute();
+                        this.sendVibrateMessageAction.execute().subscribe();
                     }
                 });
     }

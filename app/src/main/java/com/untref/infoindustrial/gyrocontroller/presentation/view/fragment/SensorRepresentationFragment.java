@@ -112,10 +112,10 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         Log.d("HEIGHT: ", String.valueOf(height));
         if (height == 0) height = 1; // To prevent divide by 0
 
-        float minWidth = -width / 1000.0f;
-        float maxWidth = width / 1000.0f;
-        float minHeight = -height / 1000.0f;
-        float maxHeight = height / 1000.0f;
+        float minWidth = 0f;
+        float maxWidth = width;
+        float minHeight = 0f;
+        float maxHeight = height;
 
         return new Bounds(maxHeight, minHeight, maxWidth, minWidth);
     }
