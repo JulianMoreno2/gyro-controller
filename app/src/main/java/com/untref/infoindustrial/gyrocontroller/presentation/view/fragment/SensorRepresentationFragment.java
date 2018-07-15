@@ -113,9 +113,9 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         if (height == 0) height = 1; // To prevent divide by 0
 
         float minWidth = 0f;
-        float maxWidth = width;
+        float maxWidth = width * 0.82f;//es una relacion que saque en base a un telefono motog4
         float minHeight = 0f;
-        float maxHeight = height;
+        float maxHeight = height * 0.85f;//es una relacion que saque en base a un telefono motog4
 
         return new Bounds(maxHeight, minHeight, maxWidth, minWidth);
     }
