@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ToggleButton;
 
 import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.provider.Provider;
 import com.untref.infoindustrial.gyrocontroller.presentation.presenter.HomePresenter;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.DevicesActivity;
+import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.OldSensorRepresentationActivity;
 import com.untref.infoindustrial.gyrocontroller.presentation.view.activity.SensorRepresentationActivity;
 
 import butterknife.BindView;
@@ -23,6 +25,9 @@ public class HomeFragment extends Fragment implements HomePresenter.View {
 
     @BindView(R.id.btn_client)
     Button btn_client;
+
+    @BindView(R.id.btn_old_version)
+    ToggleButton btn_old_version;
 
     private HomePresenter homePresenter;
 
@@ -73,10 +78,22 @@ public class HomeFragment extends Fragment implements HomePresenter.View {
     }
 
     @Override
+    public boolean isOldVersionEnabled() {
+        return btn_old_version.isChecked();
+    }
+
+    @Override
     public void renderGyroscopeRepresentationActivity() {
         Intent intent = new Intent(getActivity(), SensorRepresentationActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    public void renderOldGyroscopeRepresentationActivity() {
+        Intent intent = new Intent(getActivity(), OldSensorRepresentationActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     public Context context() {

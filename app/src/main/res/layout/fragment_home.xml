@@ -1,69 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
-  <com.untref.infoindustrial.gyrocontroller.presentation.view.widget.ShadowFrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:background="@color/light_grey"
-      >
-
-    <LinearLayout
+    <com.untref.infoindustrial.gyrocontroller.presentation.view.widget.ShadowFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@color/light_grey">
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_weight="6"
-          android:orientation="vertical"
-          android:gravity="center">
-
-        <TextView
-            android:id="@+id/txt_title"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/text_title"
-            android:textColor="@color/black"
-            android:textSize="30sp" />
-      </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_weight="2"
-          android:gravity="center"
-          android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/pv_artists"
-            style="@style/Theme.AppTheme.RobotController.ProgressBar" />
+                <TextView
+                    android:id="@+id/txt_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/text_title"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/txt_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="Ensure bluetooth is connected and devices are paired"
-            android:textColor="#ff0000"
-            android:textSize="17sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        <Button style="@style/Base.Widget.AppCompat.Button.Colored"
-            android:id="@+id/btn_client"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_client" />
+                <ProgressBar
+                    android:id="@+id/pv_artists"
+                    style="@style/Theme.AppTheme.RobotController.ProgressBar" />
 
-      </LinearLayout>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/txt_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:text="Ensure bluetooth is connected and devices are paired"
+                    android:textColor="#ff0000"
+                    android:textSize="17sp" />
 
-  </com.untref.infoindustrial.gyrocontroller.presentation.view.widget.ShadowFrameLayout>
+                <Button
+                    android:id="@+id/btn_client"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_client" />
+
+                <TextView
+                    android:id="@+id/old_version_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_old_version" />
+
+                <ToggleButton
+                    android:id="@+id/btn_old_version"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                    android:layout_width="126dp"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </com.untref.infoindustrial.gyrocontroller.presentation.view.widget.ShadowFrameLayout>
 
 </LinearLayout>

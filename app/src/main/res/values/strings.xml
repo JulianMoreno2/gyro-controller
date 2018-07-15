@@ -23,4 +23,5 @@
     <string name="obstacle">obstacle</string>
     <string name="obstacle2">obstacle</string>
     <string name="object">object</string>
+    <string name="text_old_version">Old Version</string>
 </resources>

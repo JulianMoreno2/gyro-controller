@@ -31,7 +31,7 @@ public class BluetoothService {
     // Unique UUID for this application
     private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
-    private final BluetoothAdapter bluetoothAdapter;
+    private final CustomBluetoothAdapter bluetoothAdapter;
     private final Handler handler;
     private AcceptThread acceptThread;
     private ConnectThread connectThread;
@@ -53,7 +53,7 @@ public class BluetoothService {
 
     public BluetoothService(PublishSubject<String> bluetoothMessagePublishSubject) {
         this.bluetoothMessagePublishSubject = bluetoothMessagePublishSubject;
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothAdapter = new CustomBluetoothAdapter();
         state = STATE_NONE;
         handler = createHandler();
     }
@@ -246,7 +246,8 @@ public class BluetoothService {
             // Create a new listening server socket
             try {
                 tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
-            } catch (IOException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             mmServerSocket = tmp;
         }
@@ -260,7 +261,7 @@ public class BluetoothService {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     break;
                 }
                 // If a connection was accepted
@@ -421,6 +422,39 @@ public class BluetoothService {
                 mmSocket.close();
             } catch (IOException e) {
             }
+        }
+    }
+
+    private class CustomBluetoothAdapter {
+
+        private final boolean enabled;
+        private final BluetoothAdapter defaultAdapter;
+
+        public CustomBluetoothAdapter() {
+            defaultAdapter = BluetoothAdapter.getDefaultAdapter();
+            enabled = defaultAdapter != null;
+        }
+
+
+        public boolean isEnabled() {
+            return enabled && defaultAdapter.isEnabled();
+        }
+
+        public void startDiscovery() {
+            if (enabled) defaultAdapter.startDiscovery();
+        }
+
+
+        public BluetoothServerSocket listenUsingRfcommWithServiceRecord(String name, UUID myUuid) throws IOException {
+            return enabled ? defaultAdapter.listenUsingRfcommWithServiceRecord(name, myUuid) : null;
+        }
+
+        public Set<BluetoothDevice> getBondedDevices() {
+            return enabled ? defaultAdapter.getBondedDevices() : new HashSet<>();
+        }
+
+        public void cancelDiscovery() {
+            if (enabled) defaultAdapter.cancelDiscovery();
         }
     }
 }

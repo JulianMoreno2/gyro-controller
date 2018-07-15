@@ -27,7 +27,7 @@ public class CubeRenderer implements GLSurfaceView.Renderer {
 
     public CubeRenderer(Observable<GyroscopeRotation> gyroscopeRotationObservable,
                         Observable<AccelerometerTranslation> accelerometerTranslationObservable,
-                        Bounds bounds, Action vibrate) {
+                        Bounds bounds) {
 
         this.gyroscopeRotationObservable = gyroscopeRotationObservable;
         this.accelerometerTranslationObservable = accelerometerTranslationObservable;
