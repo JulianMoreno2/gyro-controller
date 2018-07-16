@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.provider.ActionProvider;
@@ -32,6 +33,7 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
 
     @BindView(R.id.obstacle2)
     ImageView obstacle2;
+
 
     private SensorRepresentationPresenter sensorRepresentationPresenter;
 
@@ -101,6 +103,10 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
     @Override
     public View getObstacle2() {
         return obstacle2;
+    }
+
+    public TextView getAbsoluleTranslation(){
+        return (TextView) getView().findViewById(R.id.absoluteTranslation) ;
     }
 
     private Bounds getBounds() {

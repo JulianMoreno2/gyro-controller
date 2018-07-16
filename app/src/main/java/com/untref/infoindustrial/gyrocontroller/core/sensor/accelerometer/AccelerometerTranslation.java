@@ -16,6 +16,8 @@ public class AccelerometerTranslation {
     private float yAccel;
     private float zAccel;
 
+    private float absoluteTranslation;
+
     public AccelerometerTranslation(float xAccel, float yAccel, float zAccel) {
         this.xAccel = xAccel;
         this.yAccel = yAccel;
@@ -42,6 +44,10 @@ public class AccelerometerTranslation {
         this.zAccel = 0;
     }
 
+    public float getAbsoluteTranslationValue(){
+        return this.absoluteTranslation;
+    }
+
     public float getZAccel() {
         return zAccel;
     }
@@ -64,12 +70,15 @@ public class AccelerometerTranslation {
             else {
                 this.xAccel += translation.getXAccel() * 50;
             }
+            this.absoluteTranslation += Math.abs(translation.getXAccel());
         }
         if (this.getXAccel() <= bounds.getMinWidth() && translation.getXAccel() >= 0) {
             this.xAccel += translation.getXAccel() * 50;
+            this.absoluteTranslation += Math.abs(translation.getXAccel());
         }
         if (this.getXAccel() >= bounds.getMaxWidth() && translation.getXAccel() <= 0) {
             this.xAccel += translation.getXAccel() * 50;
+            this.absoluteTranslation += Math.abs(translation.getXAccel());
         }
 
         Log.d(": ", "X: " + this.xAccel);
@@ -87,12 +96,15 @@ public class AccelerometerTranslation {
             else {
                 this.yAccel -= translation.getYAccel() * 50;
             }
+            this.absoluteTranslation += Math.abs(translation.getYAccel());
         }
         if (this.getYAccel() <= bounds.getMinWidth() && translation.getYAccel() <= 0) {
             this.yAccel -= translation.getYAccel() * 50;
+            this.absoluteTranslation += Math.abs(translation.getYAccel());
         }
         if (this.getYAccel() >= bounds.getMaxWidth() && translation.getYAccel() >= 0) {
             this.yAccel -= translation.getYAccel() * 50;
+            this.absoluteTranslation += Math.abs(translation.getYAccel());
         }
 
 
@@ -123,12 +135,15 @@ public class AccelerometerTranslation {
                 else {
                     this.xAccel -= translation.getXAccel() * 25;
                 }
+                this.absoluteTranslation += Math.abs(translation.getXAccel());
             }
             if (this.getXAccel() <= bounds.getMinWidth() && translation.getXAccel() <= 0) {
                 this.xAccel -= translation.getXAccel() * 25;
+                this.absoluteTranslation += Math.abs(translation.getXAccel());
             }
             if (this.getXAccel() >= bounds.getMaxWidth() && translation.getXAccel() >= 0) {
                 this.xAccel -= translation.getXAccel() * 25;
+                this.absoluteTranslation += Math.abs(translation.getXAccel());
             }
         }
         Log.d(": ", "X: " + this.xAccel);
@@ -147,12 +162,15 @@ public class AccelerometerTranslation {
                     this.yAccel += translation.getXAccel() * 25;
                 }
                 this.yAccel += translation.getYAccel() * 25;
+                this.absoluteTranslation += Math.abs(translation.getYAccel());
             }
             if (this.getYAccel() <= bounds.getMinHeight() && translation.getYAccel() >= 0) {
                 this.yAccel += translation.getYAccel() * 25;
+                this.absoluteTranslation += Math.abs(translation.getYAccel());
             }
             if (this.getYAccel() >= bounds.getMaxHeight() && translation.getYAccel() <= 0) {
                 this.yAccel += translation.getYAccel() * 25;
+                this.absoluteTranslation += Math.abs(translation.getYAccel());
             }
         }
         Log.d(": ", "Y: " + this.yAccel);

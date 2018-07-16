@@ -16,58 +16,56 @@ public class HasCollisionBetweenObjectsAction {
         int x3 = Math.round(obstacle2.getX());
         int y3 = Math.round(obstacle2.getY());
 
-        Bitmap bitmap1 = getViewBitmap(object);
-        Bitmap bitmap2 = getViewBitmap(obstacle);
-        Bitmap bitmap3 = getViewBitmap(obstacle2);
+        Bitmap objectBitmap = getViewBitmap(object);
+        Bitmap obstacle1Bitmap = getViewBitmap(obstacle);
+        Bitmap obstacle2Bitmap = getViewBitmap(obstacle2);
 
-        if (bitmap1 == null || bitmap2 == null) {
+        if (objectBitmap == null || obstacle1Bitmap == null) {
             throw new IllegalArgumentException("bitmaps cannot be null");
         }
 
-        Rect bounds1 = new Rect(x1, y1, x1 + bitmap1.getWidth(), y1 + bitmap1.getHeight());
-        Rect bounds2 = new Rect(x2, y2, x2 + bitmap2.getWidth(), y2 + bitmap2.getHeight());
-        Rect bounds3 = new Rect(x3, y3, x3 + bitmap3.getWidth(), y3 + bitmap3.getHeight());
+        Rect objectBounds = new Rect(x1, y1, x1 + objectBitmap.getWidth(), y1 + objectBitmap.getHeight());
+        Rect obstacle1Bounds = new Rect(x2, y2, x2 + obstacle1Bitmap.getWidth(), y2 + obstacle1Bitmap.getHeight());
+        Rect obstacle2Bounds = new Rect(x3, y3, x3 + obstacle2Bitmap.getWidth(), y3 + obstacle2Bitmap.getHeight());
 
-        if (Rect.intersects(bounds1, bounds2)) {
-            Rect collisionBounds = getCollisionBounds(bounds1, bounds2);
+        if (Rect.intersects(objectBounds, obstacle1Bounds)) {
+            Rect collisionBounds = getCollisionBounds(objectBounds, obstacle1Bounds);
             for (int i = collisionBounds.left; i < collisionBounds.right; i++) {
                 for (int j = collisionBounds.top; j < collisionBounds.bottom; j++) {
-                    int bitmap1Pixel = bitmap1.getPixel(i - x1, j - y1);
-                    int bitmap2Pixel = bitmap2.getPixel(i - x2, j - y2);
+                    int bitmap1Pixel = objectBitmap.getPixel(i - x1, j - y1);
+                    int bitmap2Pixel = obstacle1Bitmap.getPixel(i - x2, j - y2);
                     if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
-                        bitmap1.recycle();
-                        bitmap1 = null;
-                        bitmap2.recycle();
-                        bitmap2 = null;
+                        objectBitmap.recycle();
+                        obstacle1Bitmap.recycle();
                         return true;
                     }
                 }
             }
         }
 
-        if (Rect.intersects(bounds1, bounds3)) {
-            Rect collisionBounds = getCollisionBounds(bounds1, bounds3);
+        if (Rect.intersects(objectBounds, obstacle2Bounds)) {
+            Rect collisionBounds = getCollisionBounds(objectBounds, obstacle2Bounds);
             for (int i = collisionBounds.left; i < collisionBounds.right; i++) {
                 for (int j = collisionBounds.top; j < collisionBounds.bottom; j++) {
-                    int bitmap1Pixel = bitmap1.getPixel(i - x1, j - y1);
-                    int bitmap3Pixel = bitmap3.getPixel(i - x3, j - y3);
+                    int bitmap1Pixel = objectBitmap.getPixel(i - x1, j - y1);
+                    int bitmap3Pixel = obstacle2Bitmap.getPixel(i - x3, j - y3);
                     if (isFilled(bitmap1Pixel) && isFilled(bitmap3Pixel)) {
-                        bitmap1.recycle();
-                        bitmap1 = null;
-                        bitmap3.recycle();
-                        bitmap3 = null;
+                        objectBitmap.recycle();
+                        objectBitmap = null;
+                        obstacle2Bitmap.recycle();
+                        obstacle2Bitmap = null;
                         return true;
                     }
                 }
             }
         }
 
-        bitmap1.recycle();
-        bitmap1 = null;
-        bitmap2.recycle();
-        bitmap2 = null;
-        bitmap3.recycle();
-        bitmap3 = null;
+        objectBitmap.recycle();
+        objectBitmap = null;
+        obstacle1Bitmap.recycle();
+        obstacle1Bitmap = null;
+        obstacle2Bitmap.recycle();
+        obstacle2Bitmap = null;
         return false;
     }
 

@@ -37,4 +37,12 @@
         android:contentDescription="@string/object"
         android:src="@android:drawable/btn_dialog" />
 
+    <TextView
+        android:id="@+id/absoluteTranslation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/obstacle"
+        android:layout_alignTop="@+id/object"
+        android:text="Absolute Translation" />
+
 </RelativeLayout>
