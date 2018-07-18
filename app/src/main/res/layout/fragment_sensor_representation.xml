@@ -38,7 +38,7 @@
         android:src="@android:drawable/btn_dialog" />
 
     <TextView
-        android:id="@+id/absoluteTranslation"
+        android:id="@+id/absolute_translation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/obstacle"

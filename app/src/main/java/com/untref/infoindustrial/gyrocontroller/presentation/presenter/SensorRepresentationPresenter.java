@@ -1,8 +1,5 @@
 package com.untref.infoindustrial.gyrocontroller.presentation.presenter;
 
-import android.widget.TextView;
-
-import com.untref.infoindustrial.gyrocontroller.R;
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenAccelerometerTranslationFromBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.ListenGyroscopeRotationFromBluetoothAction;
 import com.untref.infoindustrial.gyrocontroller.core.action.SendVibrateMessageAction;
@@ -13,7 +10,6 @@ import com.untref.infoindustrial.gyrocontroller.presentation.view.domain.HasColl
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 
 public class SensorRepresentationPresenter extends Presenter<SensorRepresentationPresenter.View> {
 
@@ -59,10 +55,8 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
                     this.translation.sum(translation, this.previousAccelerometerTranslation, this.bounds);
                     this.previousAccelerometerTranslation = translation;
                     getView().moveObject(this.translation.getXAccel(), this.translation.getYAccel());
-                    //aca actualizo la traslacion absoluta
-                    TextView textView = getView().getAbsoluleTranslation();
-                    textView.setText(String.valueOf(this.translation.getAbsoluteTranslationValue()));
-                    //
+                    getView().updateAbsoluleTranslation(this.translation.getAbsoluteTranslationValue());
+
                     if (hasCollisionBetweenObjectsAction.execute(getView().getObject(), getView().getObstacle(), getView().getObstacle2())) {
                         this.translation.reverse(translation, this.previousAccelerometerTranslation, this.bounds);
                         this.sendVibrateMessageAction.execute().subscribe();
@@ -71,7 +65,7 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
     }
 
     public void onPause() {
-        if(compositeDisposable.isDisposed()) compositeDisposable.dispose();
+        if (compositeDisposable.isDisposed()) compositeDisposable.dispose();
     }
 
     public interface View extends Presenter.View {
@@ -83,6 +77,6 @@ public class SensorRepresentationPresenter extends Presenter<SensorRepresentatio
 
         android.view.View getObstacle2();
 
-        TextView getAbsoluleTranslation();
+        void updateAbsoluleTranslation(float value);
     }
 }

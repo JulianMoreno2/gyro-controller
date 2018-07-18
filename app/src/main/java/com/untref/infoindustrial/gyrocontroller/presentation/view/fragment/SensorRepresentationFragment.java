@@ -34,6 +34,9 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
     @BindView(R.id.obstacle2)
     ImageView obstacle2;
 
+    @BindView(R.id.absolute_translation)
+    TextView absoluteTranslation;
+
 
     private SensorRepresentationPresenter sensorRepresentationPresenter;
 
@@ -105,8 +108,9 @@ public class SensorRepresentationFragment extends Fragment implements SensorRepr
         return obstacle2;
     }
 
-    public TextView getAbsoluleTranslation(){
-        return (TextView) getView().findViewById(R.id.absoluteTranslation) ;
+    @Override
+    public void updateAbsoluleTranslation(float value){
+        absoluteTranslation.setText(String.valueOf(value));
     }
 
     private Bounds getBounds() {
